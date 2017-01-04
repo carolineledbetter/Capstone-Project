@@ -1,1 +1,1 @@
-# This folder contains all output and reports.
+This folder contains all output and reports.

@@ -1,1 +1,1 @@
-# This folder contains all the code.
+This folder contains all the code.
