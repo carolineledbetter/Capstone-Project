@@ -161,3 +161,7 @@ DIQ2013 <- sasxport.get("http://wwwn.cdc.gov/Nchs/Nhanes/2013-2014/DIQ_H.XPT")
 
 
 
+
+
+#### Save Workspace ####
+save.image(file = '~/Repositories/Data/Capstone/original_all.Rdata')
