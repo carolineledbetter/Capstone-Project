@@ -1,6 +1,11 @@
 ############################################################################################
 #####             Import Data from https://wwwn.cdc.gov/Nchs/Nhanes/                   #####
 ############################################################################################
+
+# This file imports all of the data sets from the CDC used for analysis. The final workspace
+# is saved as ~/Repositories/Data/Capstone/original_all.Rdata
+
+
 library(Hmisc) #for importing SAS xport files
 
 # character variables are converted to R factors
