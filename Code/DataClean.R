@@ -151,6 +151,25 @@ invisible(lapply(ls(pattern='SMQ.*'),
                  }))
 
 
+
+#physical activity need PAD320 Moderate Activity over past 30 days
+
+for(i in allcyc[1:4]){
+  ds <- get(paste('PAQ', i, sep = ''))
+  ds <- ds[,c('seqn', 'pad320')]
+  ds$paq620 <- NA
+  ds$paq665 <- NA
+  assign(paste('PAQ', i, sep = ''), ds)
+}; remove(i,ds)
+
+for(i in allcyc[4:8]){
+  ds <- get(paste('PAQ', i, sep = ''))
+  ds <- ds[,c('seqn', 'paq620', 'paq665')]
+  ds$pad320 <- NA
+  assign(paste('PAQ', i, sep = ''), ds)
+}; remove(i,ds)
+
+
 # demographics - need data on gender, age, race/ethnicity, pregnancy status, 
 # education, income, and PSU and stratum variables for weighting (SDMVPSU, SDMCSTRA)
 
@@ -209,6 +228,8 @@ for(i in allcyc){
   ds1 <- merge(ds1, ds2, by = 'seqn')
   ds2 <- get(paste('SMQ', i, sep = ''))
   ds1 <- merge(ds1, ds2, by = 'seqn')
+  ds2 <- get(paste('PAQ', i, sep = ''))
+  ds1 <- merge(ds1, ds2, by = 'seqn')
   ds1$yr <- i
   assign(paste('all',i, sep = ''), ds1)
 }; remove(i,ds1,ds2)
@@ -255,9 +276,12 @@ analysis$foodinsecure[analysis$fsdad == 1] <- F
 analysis$foodinsecure[analysis$fsdad > 1] <- T
 
 analysis$subset <- NA
+analysis$exclreason <- NA
 analysis$subset[analysis$ridageyr >= 18 & analysis$ridageyr <= 65] <- T
 analysis$subset[analysis$ridageyr < 18 | analysis$ridageyr > 65] <- F
+analysis$exclreason[analysis$ridageyr < 18 | analysis$ridageyr > 65] <- 'Age'
 analysis$subset[analysis$ridexprg == 1 | analysis$ridexprg == 3 ] <- F
+analysis$exclreason[analysis$ridexprg == 1 | analysis$ridexprg == 3 ] <- 'Pregnancy'
 
 
 analysis$Gender <- factor(analysis$riagendr)
@@ -282,6 +306,13 @@ levels(analysis$Income) <- list('$0 - $4,999' = 1, '$5,000 - $9,999' = 2,
                               '$75,000 and Over (before 2007)' = 11, 'Over $20,000' = 12,
                               'Under $20,000' = 13, '$75,000 - $99,999(2007 and after)' = 14,
                               '$100,000 and Over (2007 and after' = 15)
+
+analysis$ModerateActivity <- factor(NA, levels = c('Yes', 'No'))
+analysis$ModerateActivity[apply(analysis[,c("pad320", "paq620", "paq665")], 1,
+                                function(i) any(i %in% c(2:3), na.rm = T))] <- 'No'
+analysis$ModerateActivity[apply(analysis[,c("pad320", "paq620", "paq665")], 1,
+                                function(i) any(i == 1, na.rm = T))] <- 'Yes'
+
 
 # save analysis dataset
 save(analysis, file = '~/Repositories/Data/Capstone/analysis.rda')
