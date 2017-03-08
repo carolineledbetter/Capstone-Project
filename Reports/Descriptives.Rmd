@@ -1,0 +1,48 @@
+---
+title: "Descriptives"
+author: "Caroline Ledbetter"
+output: pdf_document
+---
+
+```{r global_options, include=FALSE}
+knitr::opts_chunk$set(fig.width=3.5, fig.height=3, 
+                      echo=FALSE, warning=FALSE, message=FALSE)
+```
+```{r setup, include=FALSE}
+load(file = "~/Repositories/Data/Capstone/descriptives.Rdata")
+library(pander)
+```
+
+There are `r nrow(analysis)` subjects with a non-zero fasting glucose weight (included in the morning session for fasting glucose testing). `r length(which(analysis$exclreason == 'Age'))` observations were excluced for being outide the age range and `r length(which(analysis$exclreason == 'Pregnancy'))` observations were excluded for pregnancy for a total of `r length(which(analysis$subset == F))` exclusions. In addition there are `r length(which(is.na(analysis$syndrome)))` observations with missing information on metabolic syndrome. Number of observations missing each criteria are listed in table 1. Demographic and covariate information by food insecurity status are shown in Table 2 including information on those whose food insecurity status is missing. Table 3 shows metabolic syndrome by BMI category. Table 4 shows the unweighted table of food insecurity by metabolic syndrome status and Table 5 shows the number of individuals in each food security category. 
+
+```{r table one}
+panderOptions('table.split.table', Inf)
+set.alignment('center', row.names = 'left')
+pander(missingtable, caption = 'Missing Metabolic Syndrome Variables')
+```
+
+
+```{r table two}
+panderOptions('table.split.table', Inf)
+set.alignment('center', row.names = 'left')
+pander(table1, caption = 'Characteristics of Study Participants by Food Insecurity Status')
+```
+
+```{r table three}
+panderOptions('table.split.table', Inf)
+set.alignment('center', row.names = 'left')
+pander(Table3, caption = 'BMI Category by Metabolic Syndrome Status')
+```
+
+```{r table four}
+panderOptions('table.split.table', Inf)
+set.alignment('center', row.names = 'left')
+pander(Table4, caption = 'Metabolic Syndrome Status by Food Insecurity')
+```
+
+```{r table five}
+panderOptions('table.split.table', Inf)
+set.alignment('center', row.names = 'left')
+pander(t(table5), caption = 'No of Individuals at Each Level of Food Insecurity')
+```
+
