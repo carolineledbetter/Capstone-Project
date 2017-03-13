@@ -1,0 +1,39 @@
+---
+title: "Table1"
+author: "Caroline Ledbetter"
+output: pdf_document
+---
+
+```{r global_options, include=FALSE}
+knitr::opts_chunk$set(fig.width=3.5, fig.height=3, 
+                      echo=FALSE, warning=FALSE, message=FALSE)
+```
+```{r setup, include=FALSE}
+load(file = "~/Repositories/Data/Capstone/descriptives.Rdata")
+load(file = '~/Repositories/Data/Capstone/table1weighted.rda')
+library(xtable)
+```
+
+
+```{r table one, results='asis'}
+table1 <- cbind(table1, table1Weighted)
+Ns <- table1[1,]
+table1 <- table1[-1,]
+table1 <- cbind(rownames(table1), table1)
+rownames(table1) <- NULL
+addtorow <- list()
+addtorow$pos <- list()
+addtorow$pos[[1]] <- 0
+addtorow$pos[[2]] <- 0
+addtorow$pos[[3]] <- 0
+addtorow$command <- c(' & \\multicolumn{3}{c}{Unweighted} & \\multicolumn{3}{c}{Weighted} \\\\\n', paste(paste('&',colnames(table1)[-1], collapse = ' '), "\\\\\n", collapse = ''), paste(paste('&', Ns, collapse = ' '),"\\\\\n", collapse = ''))
+print(xtable(table1, caption = 'Characteristics of Study Participants by Food Insecurity Status'), caption.placement = 'top', 
+      add.to.row = addtorow, include.colnames = FALSE, comment = F, 
+      include.rowname = F)
+```
+
+
+
+
+
+

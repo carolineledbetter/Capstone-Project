@@ -1,7 +1,7 @@
 ### This file generates the preliminary descriptives of the analysis data set. ###
 
 load(file = '~/Repositories/Data/Capstone/analysis.rda')
-source('~/Repositories/Capstone-Project/Code/Table1.R')
+source('~/Repositories/Capstone-Project/Code/Table1Unweighted.R')
 
 library(plyr)
 analysis <- rename(analysis, c('alcuse' = 'Alcohol Use', 'smoker' = 'Smoking Status',
@@ -13,7 +13,7 @@ analysis$`Food Insecure`[is.na(analysis$foodinsecure)] <- 'NA'
 levels(analysis$`Food Insecure`) <- c('Not Insecure', 'Insecure', 'Missing')
 table1 <- Table1(c('Gender', 'Race', 'Education', 'Income', 'Alcohol Use', 'Smoking Status', 
                    'Moderate Phys Act', 'Age'), 'Food Insecure', analysis[analysis$subset == T,])
-table1 <- table1[,-4]
+
 
 missingmetabolic <- sapply(analysis[analysis$subset == T,c("bmxwaist", "bpxsar", "bpxdar", "lbxtr", "hdl", "lbxglu")],
                            function(x) sum(is.na(x))); 
