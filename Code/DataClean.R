@@ -297,15 +297,10 @@ levels(analysis$Education) <- list('Less than 9th Grade' = 1, '9-11th Grade' = 2
                           'High School Grad' = 3, 'Some College/AA' = 4, 
                           'College Graduate or above' = 5)
 
-analysis$Income <- factor(analysis$indfminc, exclude = c(NA, 77, 99))
-levels(analysis$Income) <- list('$0 - $4,999' = 1, '$5,000 - $9,999' = 2,
-                                '$10,000 - $14,999' = 3, '15,000 - $19,999' = 4,
-                              '$20,000 - $24,999' = 5, '$25,000 - $34,999' = 6,
-                              '$35,000 - $44,999' = 7, '$45,000 - $54,999' = 8, 
-                              '$55,000 - $64,999' = 9, '$65,000 - $74,999' = 10,
-                              '$75,000 and Over (before 2007)' = 11, 'Over $20,000' = 12,
-                              'Under $20,000' = 13, '$75,000 - $99,999(2007 and after)' = 14,
-                              '$100,000 and Over (2007 and after' = 15)
+analysis$Income <- factor(analysis$indfminc, exclude = c(NA, 12, 77, 99))
+levels(analysis$Income) <- list('Under $20,000' = c(1:4,13), '$20,000 - $54,999' = 5:8,
+                                '$55,000-$74,999' = 9:10,
+                                '$75,000 and Over' = c(11, 14:15))
 
 analysis$ModerateActivity <- factor(NA, levels = c('Yes', 'No'))
 analysis$ModerateActivity[apply(analysis[,c("pad320", "paq620", "paq665")], 1,
