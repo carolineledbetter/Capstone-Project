@@ -288,14 +288,19 @@ analysis$Gender <- factor(analysis$riagendr)
 levels(analysis$Gender) <- list('Male' = 1, 'Female' = 2)
 
 analysis$Race <- factor(analysis$ridreth1)
-levels(analysis$Race) <- list('Mexican American' = 1, 'Other Hispanic' = 2,
-                              'Non-Hispanic White' = 3, 'Non-Hispanic Black' = 4, 
+levels(analysis$Race) <- list('Non-Hispanic White' = 3,'Mexican American' = 1,
+                              'Other Hispanic' = 2,
+                              'Non-Hispanic Black' = 4, 
                               'Other (including multiracial)' = 5)
 
 analysis$Education <- factor(analysis$dmdeduc2, exclude = c(NA, 7, 9))
 levels(analysis$Education) <- list('Less than 9th Grade' = 1, '9-11th Grade' = 2, 
                           'High School Grad' = 3, 'Some College/AA' = 4, 
                           'College Graduate or above' = 5)
+analysis$Education[analysis$dmdeduc3 < 9 | analysis$dmdeduc3 %in% c(55,66)] <- 'Less than 9th Grade' 
+analysis$Education[analysis$dmdeduc3 %in% c(9:12)] <- '9-11th Grade'
+analysis$Education[analysis$dmdeduc3 %in% c(12:14)] <- 'High School Grad'
+analysis$Education[analysis$dmdeduc3 == 15] <- 'Some College/AA'
 
 analysis$Income <- factor(analysis$indfminc, exclude = c(NA, 12, 77, 99))
 levels(analysis$Income) <- list('Under $20,000' = c(1:4,13), '$20,000 - $54,999' = 5:8,
