@@ -1,0 +1,49 @@
+---
+title: "Final Report"
+author: "Caroline Ledbetter"
+header-includes:
+- \usepackage{setspace}
+- \doublespacing
+- \usepackage{amsmath}
+- \usepackage[
+      backend=biber,
+      style=numeric,
+      sorting=none
+  ]{biblatex}
+- \addbibresource{cpastone.bib}
+
+
+output:
+  pdf_document:
+    fig_caption: yes
+    fig_height: 4
+    fig_width: 5
+geometry: margin=1in
+---
+
+```{r global_options, include=FALSE}
+knitr::opts_chunk$set(echo=FALSE, warning=FALSE, message=FALSE)
+```
+
+```{r setup, include=FALSE}
+
+```
+
+
+# Background and Rationale  
+
+# Methods  
+
+# Results  
+
+# Conculsions  
+
+# Public Health Significance  
+
+# Next Steps  
+
+# Reflections  
+
+# References  
+
+
