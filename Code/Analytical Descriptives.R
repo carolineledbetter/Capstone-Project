@@ -10,8 +10,8 @@ library(survey)
 design <- svydesign(id=~sdmvpsu, strata=~sdmvstra, weights=~samplewgt, 
                     nest=TRUE,data=analysis)
 remove(analysis)
-subset_design <- subset(design, subset == T)
+
 table1Weighted <- Table1Weighted(c('Gender', 'Race', 'Education', 'Income', 
                                    'alcuse', 'smoker', 'ModerateActivity', 
-                                   'ridageyr'), 'FoodInsecure', subset_design)
+                                   'ridageyr'), 'FoodInsecure', design = subset(design, subset == T))
 save(table1Weighted, file = '~/Repositories/Data/Capstone/table1weighted.rda')
