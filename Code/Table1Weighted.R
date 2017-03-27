@@ -68,7 +68,7 @@ Table1Weighted <- function(rowvars, colvariable, design) {
   returnRowContinuous <- function(var){
     summ <- svyby(formula = as.formula(paste0("~", var)),
                   by = as.formula(paste0("~", colvariable)), 
-                  FUN = svymean, design = subset_design)
+                  FUN = svymean, design = design)
     if (summ[1,2] >= 10) m_sd <- paste(round(summ[,2],digits=0),"(",
                                        sprintf('%.1f',summ[,3]),")",sep = '')
     else if (summ[1,2] >= 1) m_sd <- paste(sprintf('%.1f',summ[,2]),"(",
@@ -78,7 +78,7 @@ Table1Weighted <- function(rowvars, colvariable, design) {
     else if (summ[1,2] >= 0.01) m_sd <- paste(sprintf('%.2e',summ[,2]),"(",
                                               sprintf('%.2e',summ[,3]),")",sep = '')
     p <- summary(svyglm(as.formula(paste0(colvariable, "~", var)),
-                                design = subset_design, 
+                                design = design, 
                         family = 'quasibinomial'))$coefficients[2,4]
     if (p < 0.01) p <- '<0.01'
     else p <- sprintf('%.2f',p)
