@@ -1,0 +1,36 @@
+---
+title: "Food Insecuirty is Associated with Metabolic Syndrome in NHANES participants 1999-2014"
+author: "Caroline Ledbetter Preceptor: Anna Baron, PhD Biostatistics Site: Colorado School of Public Health"
+header-includes:
+- \usepackage{setspace}
+- \doublespacing
+- \usepackage{amsmath}
+
+output:
+  pdf_document:
+    fig_caption: yes
+    fig_height: 4
+    fig_width: 5
+geometry: margin=1in
+---
+
+```{r global_options, include=FALSE}
+knitr::opts_chunk$set(echo=FALSE, warning=FALSE, message=FALSE)
+```
+
+```{r setup, include=FALSE}
+load('~/Repositories/Data/Capstone/analysis_report.rdata')
+```
+
+
+**Background:** In 2010, it was estimated that approximately 50 million Americans were food insecure and heart disease is the leading cause of death in the US. Metabolic syndrome is associated with the risk of developing cardiovascular disease and type 2 diabetes. A better understanding of the association between food security and poor cardiovascular and metabolic health can improve the effectiveness of public health interventions. 
+
+**Methods:** This study used data from `r nrow(analysis[analysis$subset == T,])` 18-65yr old participants collected as part of NHANES 1999-2014. The association between food insecurity and metabolic syndrome was estimated using ?logistic? regression. We adjusted for gender, race/ethnicity, age, physical activity, smoking status, alcohol use, education and income.  
+
+**Results:**  The unadjusted prevalence of metabolic syndrome in Food Secure individuals was `r prevalence[1] `% and in Food Insecure individuals was `r prevalence[2] `%. Food insecuirty was associated with metabolic syndrome [adjusted relative risk (ARR) `r paste0(sprintf('%.2f', RR_full[1]))`; 95% CI `r paste0('(', sprintf('%.2f', RR_full[2]), "-", sprintf('%.2f', RR_full[3]), ")") `. The ARR was higher is females `r paste0(sprintf('%.2f', RR_female[1]), '(', sprintf('%.2f', RR_female[2]), '-', sprintf('%.2f', RR_female[3]), ")") ` than in males `r paste0(sprintf('%.2f', RR_male[1]), '(', sprintf('%.2f', RR_male[2]), '-', sprintf('%.2f', RR_male[3]), ")") `. 
+
+**Conclusions:** Food insecurity is associated with a moderately increased risk of metabolic syndrome and this association is stronger in females than in males. It is important for public health professionals to consider access to affordable high quality food when working to promote good metabolic and cardiovascular health. 
+
+
+
+
