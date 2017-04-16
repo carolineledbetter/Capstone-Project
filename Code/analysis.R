@@ -120,7 +120,10 @@ summary(basic_model <- svyglm(MetabolicSyndrome ~ FoodInsecure, design,
                               subset = subset2 == T, family = quasibinomial()))
 
 # full model  - all covariates
-summary(full_model <- svyglm(MetabolicSyndrome ~ FoodInsecure + Gender + ridageyr + Race + Education + Income + ModerateActivity + alcuse + smoker + yr, design, subset = subset2 == T, family = quasibinomial()))
+summary(full_model <- svyglm(MetabolicSyndrome ~ FoodInsecure + Gender + ridageyr + 
+                               Race + Education + Income + ModerateActivity + alcuse +
+                               smoker + yr, design, subset = subset2 == T, 
+                             family = quasibinomial()))
 
 
 anova(full_model)
@@ -151,11 +154,19 @@ RR_full <- exp(c(rrfull$coefficients[2], confint(rrfull)[2,]))
 
 
 ################ look for effect modifcication for Race, AgeCat, and Sex #################
-summary(rrfullmodel <- svyglm(MetabolicSyndrome ~ FoodInsecure*Gender + FoodInsecure*ridageyr  + FoodInsecure*Race + Income + ModerateActivity + alcuse + smoker + yr + Education, design, subset = subset2 == T, family = quasibinomial(log), start = c(-0.5, rep(0,31)), maxit = 100))
+summary(rrfullmodel <- svyglm(MetabolicSyndrome ~ FoodInsecure*Gender + 
+                                FoodInsecure*ridageyr  + FoodInsecure*Race + Income + 
+                                ModerateActivity + alcuse + smoker + yr + Education, 
+                              design, subset = subset2 == T, family = quasibinomial(log), 
+                              start = c(-0.5, rep(0,31)), maxit = 100))
 
 #gender interaction seems significant
 
-summary(rr_nogenderInteraction <- svyglm(MetabolicSyndrome ~ Gender + FoodInsecure*ridageyr + FoodInsecure*Race + Education + Income + ModerateActivity + alcuse + smoker + yr, design, subset = subset2 == T, family = quasibinomial(log), start = c(-0.5, rep(0,30))))
+summary(rr_nogenderInteraction <- svyglm(MetabolicSyndrome ~ Gender + FoodInsecure*ridageyr 
+                                         + FoodInsecure*Race + Education + Income + 
+                                           ModerateActivity + alcuse + smoker + yr, design,
+                                         subset = subset2 == T, family = quasibinomial(log),
+                                         start = c(-0.5, rep(0,30))))
 
 anova(rrfullmodel, rr_nogenderInteraction, force = T)
 # p = <0.0001 significant
@@ -163,7 +174,8 @@ anova(rrfullmodel, rr_nogenderInteraction, force = T)
 RR_male <- exp(c(rrfullmodel$coefficients[2], confint(rrfullmodel)[2,]))
 RR_male
 
-log_RR_female <- c(rrfullmodel$coefficients[2] + rrfullmodel$coefficients[3] + rrfullmodel$coefficients[27])
+log_RR_female <- c(rrfullmodel$coefficients[2] + rrfullmodel$coefficients[3] + 
+                     rrfullmodel$coefficients[27])
 cov <- vcov(rrfullmodel)
 SE_female <- sqrt(cov[2,2] + cov[3,3] + cov[27,27] + 
                     2*cov[2,3] + 2*cov[2,27] + 2*cov[3,27])
