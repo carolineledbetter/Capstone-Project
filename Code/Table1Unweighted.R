@@ -1,4 +1,4 @@
-Table1 <- function(rowvars, colvariable, data) {
+Table1 <- function(rowvars, colvariable, data, incl_missing = F) {
   if (!is.atomic(rowvars)) stop("Please pass row variables as a vector")
   if (length(unique(data[,colvariable])) > 20) 
     stop("Column Variable has more than 20 unique values,please pass a column variable with less than 20 unique values")
@@ -14,7 +14,19 @@ Table1 <- function(rowvars, colvariable, data) {
   #determine row types and names
   vartypes <- lapply(rowvars, function(i){is.factor(data[,i])})
   catvars <- rowvars[vartypes == T]
-  numlevels <- lapply(catvars, function(i){length(levels(data[,i]))})
+  
+  #add missing level for factors 
+  if(incl_missing == T) {
+    for(i in catvars){
+      if(any(is.na(data[,i]))){
+        levels(data[,i]) <- c(levels(data[,i]),'Missing')
+        data[,i][is.na(data[,i])] <- 'Missing'
+      }
+    }; remove(i)
+  }
+  
+  
+  numlevels <- sapply(catvars, function(i){length(levels(data[,i]))})
   binaryvars <- catvars[numlevels == 2]
   binarylabs <- unlist(lapply(binaryvars, function(i){
     if (is.numeric(i)) title <- names(data)[i]
