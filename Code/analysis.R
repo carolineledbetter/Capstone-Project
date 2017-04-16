@@ -3,7 +3,7 @@
 ############ capstone project ###########################################################
 #########################################################################################
 
-### The final workspace is saved as analysisWS.Rdata
+### Variables need for the final report are saved as analysis_report.rdata
 ### All analysis is done using the analysis data set created in Code/DataClean.R
 
 library(survey)
