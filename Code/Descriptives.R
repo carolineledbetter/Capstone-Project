@@ -7,12 +7,11 @@ library(plyr)
 analysis <- rename(analysis, c('alcuse' = 'Alcohol Use', 'smoker' = 'Smoking Status',
                                'ModerateActivity' = 'Moderate Phys Act', 'ridageyr' = 'Age'))
 analysis$'Food Insecure' <- factor(analysis$foodinsecure,
-                                   levels = list('Not Insecure' = FALSE, 'Insecure' = TRUE, 'NA'),
+                                   levels = list('Not Insecure' = FALSE, 'Insecure' = TRUE, 'Missing'),
                                    exclude = NULL)
-analysis$`Food Insecure`[is.na(analysis$foodinsecure)] <- 'NA'
-levels(analysis$`Food Insecure`) <- c('Not Insecure', 'Insecure', 'Missing')
+analysis$`Food Insecure`[is.na(analysis$foodinsecure)] <- 'Missing'
 table1 <- Table1(c('Gender', 'Race', 'Education', 'Income', 'Alcohol Use', 'Smoking Status', 
-                   'Moderate Phys Act', 'Age'), 'Food Insecure', analysis[analysis$subset == T,])
+                   'Moderate Phys Act', 'Age'), 'Food Insecure', analysis[analysis$subset == T,], incl_missing = T)
 
 
 missingmetabolic <- sapply(analysis[analysis$subset == T,c("bmxwaist", "bpxsar", "bpxdar", "lbxtr", "hdl", "lbxglu")],
