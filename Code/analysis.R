@@ -363,8 +363,143 @@ RR_female_cat <- sapply(0:2, function(i) {
 
 
 
+#########################################################################################
+################ Consider excluding alc use due to high missing #########################
+#########################################################################################
 
-# save objects for report
-save(list = c(ls(pattern = 'RR_.*'), ls(pattern = 'plot'), "prevalence", 'analysis'), 
+#########################################################################################
+##### get unadjusted prevalence for Metabolic Syndrome by +/- Food Insecurity ###########
+prevalence_noalc <- sapply(levels(analysis$FoodInsecure), function(x) {
+  p <- svyciprop(~syndrome, subset(design, subset3 == T  & FoodInsecure == x))
+  paste0(sprintf('%.2f', p), '(', sprintf('%.2f',attr(p, 'ci')[1]), '-',
+         sprintf('%.2f', attr(p, 'ci')[2]), ')')
+})
+
+
+#### get unadjusted prevalence for Metabolic Syndrome by Each Food Security  Cat##########
+prevalence_alt_noalc <- sapply(levels(analysis$FoodSecurity), function(x) {
+  p <- svyciprop(~syndrome, subset(design, subset3 == T & FoodSecurity == x))
+  paste0(sprintf('%.2f', p), '(', sprintf('%.2f',attr(p, 'ci')[1]), '-',
+         sprintf('%.2f', attr(p, 'ci')[2]), ')')
+})
+
+#########################################################################################
+########################## relative risk regression #####################################
+#########################################################################################
+summary(rrbasic_noalc <- svyglm(MetabolicSyndrome ~ FoodInsecure, design, 
+                                subset = subset3 == T, 
+                                family = quasibinomial(log), 
+                                start = c(-0.5, rep(0,1))))
+
+# full model 
+summary(rrnoalc <- svyglm(MetabolicSyndrome ~ FoodInsecure + Gender + ridageyr + Race 
+                         + Education + Income + ModerateActivity +  smoker + yr,
+                         design, 
+                         subset = subset3 == T, family = quasibinomial(log), 
+                         start = c(-0.5, rep(-0,23))))
+
+
+# basic model <- exposure only  with Food Security Categories
+summary(rrbasic2_noalc <- svyglm(MetabolicSyndrome ~ FoodSecurity, design, 
+                                 subset = subset3 == T, 
+                                 family = quasibinomial(log), start = c(-0.5, rep(0,3))))
+
+# full model all covariates with Food Security Categories
+summary(rrnoalc2 <- svyglm(MetabolicSyndrome ~ FoodSecurity + Gender + ridageyr + Race 
+                          + Education + Income + ModerateActivity + smoker + yr,
+                          design, 
+                          subset = subset3 == T, family = quasibinomial(log), 
+                          start = c(-0.5, rep(-0,25))))
+#crude
+RR_basic_noalc <- exp(c(rrbasic_noalc$coefficients[2], confint(rrbasic_noalc)[2,]))
+
+#adj
+RR_noalc <- exp(c(rrnoalc$coefficients[2], confint(rrnoalc)[2,]))
+RR_noalc
+
+# categories
+RR_basic_noalc2 <- matrix(exp(c(rrbasic2_noalc$coefficients[2:4], 
+                          confint(rrbasic2_noalc)[2:4,])), nrow = 3)
+
+RR_noalc2 <- matrix(exp(c(rrnoalc2$coefficients[2:4], confint(rrnoalc2)[2:4,])), nrow = 3)
+RR_noalc2
+
+
+################ look for effect modifcication for Race, AgeCat, and Sex #################
+summary(rr_int_noalc <- svyglm(MetabolicSyndrome ~ FoodInsecure*Gender + ridageyr  + 
+                                 Race + Income + ModerateActivity + smoker + yr + 
+                                 Education, design, subset = subset3 == T, 
+                               family = quasibinomial(log), 
+                              start = c(-0.5, rep(0,24)), maxit = 50))
+summary(rr_int_noalc <- svyglm(MetabolicSyndrome ~ FoodInsecure*Gender +
+                                 FoodInsecure*ridageyr  + FoodInsecure*Race + Income +
+                                 ModerateActivity + smoker + yr + Education,
+                               design, subset = subset3 == T, family = quasibinomial(log),
+                               start = c(-0.5, rep(0,29)), maxit = 50))
+
+
+# with Categorical Food Security
+summary(rr_int_noalc2 <- svyglm(MetabolicSyndrome ~ FoodSecurity*Gender + 
+                                   FoodSecurity*ridageyr + FoodSecurity*Race + Income +
+                                   ModerateActivity + smoker + 
+                                   yr + Education, design, subset = subset3 == T, 
+                                 family = quasibinomial(log), 
+                                 start = c(-0.5, rep(0,43)), maxit = 50))
+
+#gender interaction seems significant
+
+summary(rr_nogenderint_noalc <- svyglm(MetabolicSyndrome ~ Gender + 
+                                         FoodInsecure*ridageyr + FoodInsecure*Race + 
+                                         Education + Income + ModerateActivity  + 
+                                         smoker + yr, design, subset = subset3 == T, 
+                                       family = quasibinomial(log), 
+                                       start = c(-0.5, rep(0,28))))
+
+summary(rr_nogenderint_noalc2 <- svyglm(MetabolicSyndrome ~ Gender + 
+                                          FoodSecurity*ridageyr + FoodSecurity*Race + 
+                                          Education + Income + ModerateActivity + 
+                                          smoker + yr, design, subset = subset3 == T, 
+                                        family = quasibinomial(log), 
+                                        start = c(-0.5, rep(0,40))))
+
+anova(rr_int_noalc, rr_nogenderint_noalc, force = T)
+# p = <0.0001 significant
+
+
+# anova(rr_int_noalc2, rr_nogenderint_noalc2, force = T)
+# error
+
+RR_male_noalc <- exp(c(rr_int_noalc$coefficients[2], confint(rr_int_noalc)[2,]))
+RR_male_noalc
+
+RR_male_cat_noalc <- matrix(exp(c(rr_int_noalc2$coefficients[2:4], 
+                                  confint(rr_int_noalc2)[2:4,])), nrow = 3)
+
+log_RR_female_noalc <- c(rr_int_noalc$coefficients[2] + rr_int_noalc$coefficients[3] + 
+                           rr_int_noalc$coefficients[25])
+cov <- vcov(rr_int_noalc)
+SE_female <- sqrt(cov[2,2] + cov[3,3] + cov[25,25] + 
+                    2*cov[2,3] + 2*cov[2,25] + 2*cov[3,25])
+CI_female_noalc <- exp(c(log_RR_female_noalc - 1.96*SE_female, 
+                         log_RR_female_noalc + 1.96*SE_female))
+RR_female_noalc <- c(exp(log_RR_female_noalc), CI_female_noalc)
+names(RR_female_noalc)[2:3] <- c('2.5%', '97.5%')
+RR_female_noalc
+
+
+RR_female_cat_noalc <- sapply(0:2, function(i) {
+  log_RR_female <- c(rr_int_noalc2$coefficients[2+i] + rr_int_noalc2$coefficients[5+i] + 
+                       rr_int_noalc2$coefficients[27+i])
+  cov <- vcov(rr_int_noalc2)
+  SE_female <- sqrt(cov[2+i,2+i] + cov[5+i,5+i] + cov[27+i,27+i] + 
+                      2*cov[2+i, 5+i] + 2*cov[2+i,27+i] + 2*cov[5+i,27+i])
+  CI_female <- exp(c(log_RR_female - 1.96*SE_female, log_RR_female + 1.96*SE_female))
+  RR_female <- c(exp(log_RR_female), CI_female)
+  names(RR_female)[2:3] <- c('2.5%', '97.5%')
+  RR_female <- round(RR_female, 2)
+  return(paste0(RR_female[1],"(", RR_female[2], '-', RR_female[3], ')'))
+})
+
+save(list = c(ls(pattern = 'RR_.*'), ls(pattern = 'plot'), ls(pattern = 'p_FS'), 
+              ls(pattern = 'myleg.*'), ls(pattern = 'preval.*'), 'analysis'), 
      file = '~/Repositories/Data/Capstone/analysis_report.rdata')
-
