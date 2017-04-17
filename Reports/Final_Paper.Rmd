@@ -1,40 +1,164 @@
 ---
 title: "Food Insecurity is Associated with Metabolic Syndrome among NHANES Participants 1999-2014"
 author: "Caroline Ledbetter"
-output: pdf_document
+output: 
+  pdf_document:
+    fig_caption: yes
+    fig_height: 3.5
+    fig_width: 8
 ---
 
 ```{r global_options, include=FALSE}
-knitr::opts_chunk$set(fig.width=3.5, fig.height=3, 
-                      echo=FALSE, warning=FALSE, message=FALSE)
+knitr::opts_chunk$set(echo=FALSE, warning=FALSE, message=FALSE)
 ```
 ```{r setup, include=FALSE}
-load(file = "~/Repositories/Data/Capstone/descriptives.Rdata")
-load(file = '~/Repositories/Data/Capstone/table1weighted.rda')
+load(file = "~/Repositories/Data/Capstone/finaldescriptives.rdata")
 load(file = '~/Repositories/Data/Capstone/analysis_report.rdata')
-library(xtable)
+library(pander)
+library(ggplot2)
+library(grid)
+library(gridExtra)
+```
+
+# Abstract  
+
+# Introduction  
+
+# Methods  
+
+# Results   
+
+\newpage
+```{r table one}
+panderOptions('table.split.table', Inf)
+set.alignment('center', row.names = 'left')
+pander(table1, caption = 'Charactersitcs of Study Participants by Food Security Status')
+set.alignment('center', row.names = 'left')
+pander(table1_alt, caption = 'Charactersitcs of Study Participants by Food Security Status')
+```
+
+```{r table two}
+panderOptions('table.split.table', Inf)
+set.alignment('center', row.names = 'left')
+pander(table2, caption = 'Weighted Charactersitcs of Study Participants by Food Security Status')
+set.alignment('center', row.names = 'left')
+pander(table2alt, caption = 'Weighted Charactersitcs of Study Participants by Food Security Status')
+```
+
+\newpage
+```{r age-period graphs}
+title2 <- 
+  textGrob("Prevalence of Metabolic Syndrome and Food Insecurity by Age and NHANES Cycle", 
+           gp=gpar(fontface="bold"))
+grid.arrange(arrangeGrob(plotMSbyAGe + theme(legend.position="none"),
+                         plotFIbyAGe + theme(legend.position="none"),
+                         nrow=1, ncol = 2, bottom = 'Midpoint of Age'), 
+             mylegend, ncol = 2, widths = c(6, 1), top = title2, left = 'Prevalence')
+
+```
+
+```{r foodseccat graphs, fig.height = 7}
+title1=textGrob("Prevalence of Food Security Categories by Age and NHANES Cycle",
+                gp=gpar(fontface="bold"))
+grid.arrange(arrangeGrob(p_FS2 + theme(legend.position="none"),
+                         p_FS3 + theme(legend.position="none"),
+                         p_FS4 + theme(legend.position="none"),
+                         nrow=3, ncol = 1),
+              mylegend, ncol = 2, widths = c(6, 1), top = title1, left = 'Prevalence')
 ```
 
 
-```{r table one, results='asis'}
-table1 <- cbind(table1, table1Weighted)
-Ns <- table1[1,]
-table1 <- table1[-1,]
-table1 <- cbind(rownames(table1), table1)
-rownames(table1) <- NULL
-addtorow <- list()
-addtorow$pos <- list()
-addtorow$pos[[1]] <- 0
-addtorow$pos[[2]] <- 0
-addtorow$pos[[3]] <- 0
-addtorow$command <- c(' & \\multicolumn{3}{c}{Unweighted} & \\multicolumn{3}{c}{Weighted} \\\\\n', paste(paste('&',colnames(table1)[-1], collapse = ' '), "\\\\\n", collapse = ''), paste(paste('&', Ns, collapse = ' '),"\\\\\n", collapse = ''))
-print(xtable(table1, caption = 'Characteristics of Study Participants by Food Insecurity Status'), caption.placement = 'top', 
-      add.to.row = addtorow, include.colnames = FALSE, comment = F, 
-      include.rowname = F)
+So, I performed the analysis a few different ways, one with food security dichotimized as 'Not Food Insecure' and 'Food Insecure' and then with the original food security categories, excluding all participants missing covariate data includng information on alcohol use for both analysis. This resulted in **`r nrow(analysis[analysis$subset2 == T,])`** observations. The other was the same binary and categorical analysis but with no adjustment for alcohol use and therefore particants missing only covariate info on alchol use were included. This resulted in **`r nrow(analysis[analysis$subset3 == T,])`** observations.
+
+```{r results}
+# function to round ratios and put CIs in parentheses
+CItxt <- function(obj) {
+  y <- sapply(obj, function(x) sprintf('%.2f',x))
+  z <- paste0(y[1], '(', y[2], '-', y[3], ')')
+  return(z)
+}
+
+RR_basic <- CItxt(RR_basic)
+RR_basic_noalc <- CItxt(RR_basic_noalc)
+
+# unadjusted prevalence and Crude Ratios - Dichotimous Food Insecurity
+UnadjTbl1 <- matrix(c('',prevalence, RR_basic, '',prevalence_noalc, RR_basic_noalc),
+                     ncol = 2, 
+                     dimnames = list(c('Unadjusted Prevalence',
+                                       '\\ Food Secure',
+                                       '\\ Food Insecure',
+                                       'Crude Risk Ratio'), 
+                                     c('Metabolic Syndrome (missing alc excl)', 
+                                       'Metabolic Syndrome (missing alc not excl)')))
+panderOptions('table.split.table', Inf)
+set.alignment('center', row.names = 'left')
+pander(UnadjTbl1, 
+       caption = 'Unadjusted Prevalence and Relative Risk Ratio of Metabolic Syndrome')
+
+
+# unadjusted prevalence and Crude Ratios - Categorical Food Security
+RR_basic2 <- apply(RR_basic2, MARGIN = 1, CItxt)
+RR_basic_noalc2 <- apply(RR_basic_noalc2, MARGIN = 1, CItxt)
+
+UnadjTbl2 <- matrix(c('', prevalence_alt, '', RR_basic2, '',prevalence_alt_noalc, 
+                      '', RR_basic_noalc2), ncol = 2, 
+                     dimnames = list(
+                       c('Unadjusted Prevalence', '\\ Full food security', 
+                         '\\ Marginal food security', 
+                         '\\ Low Food security',
+                         '\\ Very low Food security', 
+                         'Crude Risk Ratio (vs full food security)',
+                         '\\ Marginal food security',
+                         '\\ Low food security',
+                         '\\ Very low food security'), 
+                       c('Metabolic Syndrome (missing alc excl)', 
+                         'Metabolic Syndrome (missing alc not excl)')))
+panderOptions('table.split.table', Inf)
+set.alignment('center', row.names = 'left')
+pander(UnadjTbl2, 
+       caption = 'Unadjusted Prevalence and Relative Risk Ratio of Metabolic Syndrome')
+
+
+# dicotimous food security with and without alcolhol
+RR_male <- CItxt(RR_male)
+RR_female <- CItxt(RR_female)
+RR_male_noalc <- CItxt(RR_male_noalc)
+RR_female_noalc <- CItxt(RR_female_noalc)
+
+BinTab <- matrix(c(RR_male, RR_female, RR_male_noalc, RR_female_noalc), nrow = 2,
+                 dimnames = list(c('Male', 'Female'), 
+                                 c('Adj RR', 'Adj RR not adj for alc')))
+set.alignment('center', row.names = 'left')
+pander(BinTab, 
+       caption = 'Adjusted Risk Ratio Metabolic Syndrome by Food Insecurity Status')
+
+
+# Categorical Food Security Status
+RR_male_cat <- apply(RR_male_cat, 1, CItxt)
+RR_male_cat_noalc <- apply(RR_male_cat_noalc, 1, CItxt)
+
+CatTab <- matrix(c('', RR_male_cat, '', RR_male_cat_noalc,
+                   '', RR_female_cat, '', RR_female_cat_noalc), ncol = 2,
+                 dimnames = list(c('Adj RR (vs full food security)', 
+                                   '\\ Marginal food security', 
+                                   '\\ Low food security', 
+                                   '\\ Very low food security',
+                                   'Adj RR not adj for alc (vs full food security)', 
+                                   '\\ Marginal food security', 
+                                   '\\ Low food security', 
+                                   '\\ Very low food security'), 
+                                 c('Males', 'Females')))
+pander(CatTab, 
+       caption = 'Adjusted Risk Ratio Metabolic Syndrome by Food Security Category')
 ```
 
 
 
+# Discussion  
+
+# Conculsions  
+
+# References  
 
 
 
