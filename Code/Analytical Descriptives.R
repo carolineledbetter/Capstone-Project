@@ -69,6 +69,7 @@ table2alt <- Table1Weighted(c('Gender', 'Race', 'Education', 'Income', 'Alcohol.
 
 # put spaces back in for '.'
 rownames(table2) <- gsub('\\.', ' ', rownames(table2))
+rownames(table2alt) <- gsub('\\.', ' ', rownames(table2alt))
 
 save(list = ls(pattern = 'table.*'), 
      file = '~/Repositories/Data/Capstone/finaldescriptives.rdata')
