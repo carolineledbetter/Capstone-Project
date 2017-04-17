@@ -1,5 +1,5 @@
 ---
-title: "Food Insecurity is Associated with Metabolic Syndrome among NHANES Participants 1999-2014"
+title: "Association of Food Insecurity and Metabolic Syndrome among NHANES Participants 1999-2014"
 author: "Caroline Ledbetter"
 output: 
   pdf_document:
@@ -34,7 +34,8 @@ panderOptions('table.split.table', Inf)
 set.alignment('center', row.names = 'left')
 pander(table1, caption = 'Charactersitcs of Study Participants by Food Security Status')
 set.alignment('center', row.names = 'left')
-pander(table1_alt, caption = 'Charactersitcs of Study Participants by Food Security Status')
+pander(table1_alt, 
+       caption = 'Charactersitcs of Study Participants by Food Security Category')
 ```
 
 ```{r table two}
@@ -42,7 +43,8 @@ panderOptions('table.split.table', Inf)
 set.alignment('center', row.names = 'left')
 pander(table2, caption = 'Weighted Charactersitcs of Study Participants by Food Security Status')
 set.alignment('center', row.names = 'left')
-pander(table2alt, caption = 'Weighted Charactersitcs of Study Participants by Food Security Status')
+pander(table2alt, 
+       caption = 'Weighted Charactersitcs of Study Participants by Food Security Category')
 ```
 
 \newpage
@@ -66,7 +68,7 @@ grid.arrange(arrangeGrob(p_FS2 + theme(legend.position="none"),
                          nrow=3, ncol = 1),
               mylegend, ncol = 2, widths = c(6, 1), top = title1, left = 'Prevalence')
 ```
-
+\newpage
 
 So, I performed the analysis a few different ways, one with food security dichotimized as 'Not Food Insecure' and 'Food Insecure' and then with the original food security categories, excluding all participants missing covariate data includng information on alcohol use for both analysis. This resulted in **`r nrow(analysis[analysis$subset2 == T,])`** observations. The other was the same binary and categorical analysis but with no adjustment for alcohol use and therefore particants missing only covariate info on alchol use were included. This resulted in **`r nrow(analysis[analysis$subset3 == T,])`** observations.
 
