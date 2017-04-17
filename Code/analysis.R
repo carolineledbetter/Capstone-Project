@@ -267,6 +267,11 @@ summary(rrfull <- svyglm(MetabolicSyndrome ~ FoodInsecure + Gender + ridageyr + 
                start = c(-0.5, rep(-0,25)), maxit = 100))
 
 
+
+# basic model <- exposure only  with Food Security Categories
+summary(rrbasic2 <- svyglm(MetabolicSyndrome ~ FoodSecurity, design, subset = subset2 == T, 
+                          family = quasibinomial(log), start = c(-0.5, rep(0,3))))
+
 # full model all covariates with Food Security Categories
 summary(rrfull2 <- svyglm(MetabolicSyndrome ~ FoodSecurity + Gender + ridageyr + Race 
                          + Education + Income + ModerateActivity + alcuse + smoker + yr,
@@ -283,6 +288,9 @@ RR_basic <- exp(c(rrbasic$coefficients[2], confint(rrbasic)[2,]))
 RR_full <- exp(c(rrfull$coefficients[2], confint(rrfull)[2,]))
 
 # categories
+RR_basic2 <- matrix(exp(c(rrbasic2$coefficients[2:4], 
+                            confint(rrbasic2)[2:4,])), nrow = 3)
+
 RR_full2 <- matrix(exp(c(rrfull2$coefficients[2:4], confint(rrfull2)[2:4,])), nrow = 3)
 
 ################ look for effect modifcication for Race, AgeCat, and Sex #################
