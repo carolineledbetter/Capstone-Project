@@ -145,7 +145,7 @@ for(x in ls(pattern = 'pFS.*')) {
   colnames(df) <- c(1999,2001,2003,2005,2007,2009,2011,2013)
   rownames(df) <- seq(25,55,10)
   assign(paste(x), df, .GlobalEnv)
-}
+}; remove(x)
 
 for(x in ls(pattern = 'pFS.*')) {
   df <- get(x)
@@ -157,7 +157,7 @@ for(x in ls(pattern = 'pFS.*')) {
                                    '2005 - 2006', '2007 - 2008', '2009 - 2010',
                                    '2011 - 2012', '2013 - 2014'))
   assign(paste0(x, '_melt'), melt, .GlobalEnv)
-}
+}; remove(x)
 
 
 ################################ Make Graphs ############################################
@@ -165,9 +165,8 @@ library(ggplot2)
 
 plotMSbyAGe <- ggplot(data = prevMS_melt, 
                       aes(x = midpoint, y = prevalence, group = year, colour = NHANES)) +
-  labs(title = 'Prevalence of Metabolic Syndrome By Age
-                     For Each NHANES Cycle', x = 'Midpoint of Age',
-       y = 'Prevalence of Metabolic Syndrome') +
+  labs(title = 'Metabolic Syndrome', x = NULL,
+       y = NULL) +
   geom_point(size = 1) + geom_line()
 
 plotMSbyAGe
@@ -175,32 +174,10 @@ plotMSbyAGe
 
 plotFIbyAGe <- ggplot(data = prevFI_melt,
                       aes(x = midpoint, y = prevalence, group = year, colour = NHANES)) +
-  labs(title = 'Prevalence of Food Insecurity By Age
-                     For Each NHANES Cycle', x = 'Midpoint of Age',
-       y = 'Prevalence of Food Insecurity') + 
+  labs(title = 'Food Insecurity', x = NULL, y = NULL) + 
   geom_point(size = 1) + geom_line()
 
 plotFIbyAGe
-
-p_FS2 <- ggplot(data = pFS2_melt, 
-               aes(x = midpoint, y = prevalence, group = year, colour = NHANES)) + 
-        labs(title = 'Marginal Food Security', x = 'Midpoint of Age',
-             y = 'Prevalence') + 
-        geom_point(size = 1) + geom_line() + 
-        theme(legend.position = 'bottom', legend.text = element_text(size = 12), 
-              legend.title = element_text(size =14))
-
-p_FS3 <- ggplot(data = pFS3_melt, 
-               aes(x = midpoint, y = prevalence, group = year, colour = NHANES)) + 
-  labs(title = 'Low Food Security', x = 'Midpoint of Age',
-       y = 'Prevalence') + 
-  geom_point(size = 1) + geom_line()
-
-p_FS4 <- ggplot(data = pFS4_melt, 
-               aes(x = midpoint, y = prevalence, group = year, colour = NHANES)) + 
-  labs(title = 'Very Low Food Security', x = 'Midpoint of Age',
-       y = 'Prevalence') + 
-  geom_point(size = 1) + geom_line()
 
 #create legend - from 
 # http://stackoverflow.com/questions/11883844/inserting-a-table-under-the-legend-in-a-ggplot2-histogram
@@ -209,7 +186,29 @@ g_legend<-function(a.gplot){
   leg <- which(sapply(tmp$grobs, function(x) x$name) == "guide-box") 
   legend <- tmp$grobs[[leg]] 
   return(legend)}
-mylegend <- g_legend(p_FS2)
+mylegend <- g_legend(plotMSbyAGe)
+
+p_FS2 <- ggplot(data = pFS2_melt, 
+               aes(x = midpoint, y = prevalence, group = year, colour = NHANES)) + 
+        labs(title = 'Marginal Food Security', x = NULL,
+             y = NULL) + 
+        geom_point(size = 1) + geom_line() + 
+        theme(legend.position = 'bottom', legend.text = element_text(size = 12), 
+              legend.title = element_text(size =14))
+
+p_FS3 <- ggplot(data = pFS3_melt, 
+               aes(x = midpoint, y = prevalence, group = year, colour = NHANES)) + 
+  labs(title = 'Low Food Security', x = NULL,
+       y = NULL) + 
+  geom_point(size = 1) + geom_line()
+
+p_FS4 <- ggplot(data = pFS4_melt, 
+               aes(x = midpoint, y = prevalence, group = year, colour = NHANES)) + 
+  labs(title = 'Very Low Food Security', x = 'Midpoint of Age',
+       y = NULL) + 
+  geom_point(size = 1) + geom_line()
+
+mylegend2 <- g_legend(p_FS2)
 
 
 library(grid)
@@ -220,7 +219,7 @@ grid.arrange(arrangeGrob(p_FS2 + theme(legend.position="none"),
                          p_FS3 + theme(legend.position="none"),
                          p_FS4 + theme(legend.position="none"),
                          nrow=3, ncol = 1),
-             mylegend, nrow = 2, heights = c(14, 1), top = title1)
+             mylegend2, nrow = 2, heights = c(14, 1), top = title1)
 
 
 #### Food Insecurity has been increasing over time for all age groups, therefore ######
