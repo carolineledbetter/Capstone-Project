@@ -328,16 +328,19 @@ analysis$foodinsecure[analysis$fsdad > 1] <- T
 
 
 #########################################################################################
-# exclude those under 18, over 65 or pregnant, must be left in data set due to complex 
-# survey design, set exclusion reason for data characterization
+# exclude those under 18, over 65 or pregnant, or missing outcome
+# must be left in data set due to complex survey design, 
+# set exclusion reason for data characterization
 
 analysis$subset <- NA
 analysis$exclreason <- NA
 analysis$subset[analysis$ridageyr >= 18 & analysis$ridageyr <= 65] <- T
-analysis$subset[analysis$ridageyr < 18 | analysis$ridageyr > 65] <- F
-analysis$exclreason[analysis$ridageyr < 18 | analysis$ridageyr > 65] <- 'Age'
 analysis$subset[analysis$ridexprg == 1 | analysis$ridexprg == 3 ] <- F
 analysis$exclreason[analysis$ridexprg == 1 | analysis$ridexprg == 3 ] <- 'Pregnancy'
+analysis$subset[analysis$ridageyr < 18 | analysis$ridageyr > 65] <- F
+analysis$exclreason[analysis$ridageyr < 18 | analysis$ridageyr > 65] <- 'Age'
+analysis$subset[is.na(analysis$metabolic)] <- F
+analysis$exclreason[is.na(analysis$metabolic)] <- 'Outcome'
 
 
 #########################################################################################
@@ -408,6 +411,22 @@ sapply(analysis[, c('Gender', 'Race', 'Education', 'Income', 'ModerateActivity',
 analysis$subset2 <- analysis$subset
 analysis$subset2[analysis$excludecov] <- F
 
+#########################################################################################
+################ Consider excluding alc use due to high missing #########################
+#########################################################################################
+analysis$subset3 <- analysis$subset
+
+analysis$excludecov2 <- NA
+analysis$excludecov2 <- apply(analysis[, c('Gender', 'Race', 'Education', 'Income', 
+                                           'ModerateActivity', 'smoker', 'ridageyr')],
+                             MARGIN = 1, function(x) any(is.na(x)))
+
+# check 
+table(analysis$excludecov2) #7355 excluded
+sapply(analysis[, c('Gender', 'Race', 'Education', 'Income', 'ModerateActivity', 
+                    'smoker', 'ridageyr')], function(x) sum(is.na(x)));
+
+analysis$subset3[analysis$excludecov2] <- F
 
 # save analysis dataset
 save(analysis, file = '~/Repositories/Data/Capstone/analysis.rda')
