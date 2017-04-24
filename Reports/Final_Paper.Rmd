@@ -1,16 +1,22 @@
 ---
 title: "Association of Food Insecurity and Metabolic Syndrome among NHANES Participants 1999-2014"
 author: "Caroline Ledbetter"
+
 output: 
   pdf_document:
     fig_caption: yes
     fig_height: 3.5
     fig_width: 8
+
+bibliography: /Users/Caroline/Repositories/Capstone-Project/Docs/paper.bib
+csl: /Users/Caroline/Repositories/Capstone-Project/Docs/journal-of-nutrition.csl
 ---
 
 ```{r global_options, include=FALSE}
 knitr::opts_chunk$set(echo=FALSE, warning=FALSE, message=FALSE)
 ```
+
+
 ```{r setup, include=FALSE}
 load(file = "~/Repositories/Data/Capstone/finaldescriptives.rdata")
 load(file = '~/Repositories/Data/Capstone/analysis_report.rdata')
@@ -23,6 +29,8 @@ library(gridExtra)
 # Abstract  
 
 # Introduction  
+
+Food Security is access at all times to enough food for an active, healthy life; food insecurity exists when ever the availability of nutritionally adequate and safe foods is limited or uncertain[@RN81].
 
 # Methods  
 
@@ -70,7 +78,7 @@ grid.arrange(arrangeGrob(p_FS2 + theme(legend.position="none"),
 ```
 \newpage
 
-So, I performed the analysis a few different ways, one with food security dichotimized as 'Not Food Insecure' and 'Food Insecure' and then with the original food security categories, excluding all participants missing covariate data includng information on alcohol use for both analysis. This resulted in **`r nrow(analysis[analysis$subset2 == T,])`** observations. The other was the same binary and categorical analysis but with no adjustment for alcohol use and therefore particants missing only covariate info on alchol use were included. This resulted in **`r nrow(analysis[analysis$subset3 == T,])`** observations.
+
 
 ```{r results}
 # function to round ratios and put CIs in parentheses
@@ -150,6 +158,7 @@ CatTab <- matrix(c('', RR_male_cat, '', RR_male_cat_noalc,
                                    '\\ Low food security', 
                                    '\\ Very low food security'), 
                                  c('Males', 'Females')))
+set.alignment('center', row.names = 'left')
 pander(CatTab, 
        caption = 'Adjusted Risk Ratio Metabolic Syndrome by Food Security Category')
 ```
@@ -160,7 +169,6 @@ pander(CatTab,
 
 # Conculsions  
 
-# References  
-
+# References
 
 
