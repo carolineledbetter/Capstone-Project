@@ -30,7 +30,7 @@ library(gridExtra)
 
 # Introduction  
 
-Food Security is access at all times to enough food for an active, healthy life; food insecurity exists when ever the availability of nutritionally adequate and safe foods is limited or uncertain[@RN81].
+Food Security is access at all times to enough food for an active, healthy life; food insecurity exists when ever the availability of nutritionally adequate and safe foods is limited or uncertain[@RN81]. In 2010, it was estimated that approximately 50 million Americans were food insecure [@RN82]. Houselholds reporting food insecurity report a decrease in the frequency of comnsumption of fruits and vegetables[@RN86]. Previous has research has found an association between food insecurity and hyperlipidemia, hypertension, diabetes[@RN80; @RN89], peripheral arterial disease [@RN88], and poor cardiovascular health [@RN87]. 
 
 # Methods  
 
