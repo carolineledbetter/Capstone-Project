@@ -1,16 +1,17 @@
 ---
-title: "Food Insecuirty is Associated with Metabolic Syndrome in NHANES participants 1999-2014"
-author: "Caroline Ledbetter Preceptor: Anna Baron, PhD Biostatistics Site: Colorado School of Public Health"
+title: Food Insecuirty is Associated with Metabolic Syndrome in NHANES participants
+  1999-2014
+author: 'Caroline Ledbetter Preceptor: Anna Baron, PhD Biostatistics Site: Colorado
+  School of Public Health'
 header-includes:
 - \usepackage{setspace}
 - \doublespacing
-- \usepackage{amsmath}
-
 output:
   pdf_document:
     fig_caption: yes
     fig_height: 4
     fig_width: 5
+  word_document: default
 geometry: margin=1in
 ---
 
@@ -23,13 +24,13 @@ load('~/Repositories/Data/Capstone/analysis_report.rdata')
 ```
 
 
-**Background:** In 2010, it was estimated that approximately 50 million Americans were food insecure and heart disease is the leading cause of death in the US. Metabolic syndrome is associated with the risk of developing cardiovascular disease and type 2 diabetes. A better understanding of the association between food security and poor cardiovascular and metabolic health can improve the effectiveness of public health interventions. 
+**Background:** In 2011, it was estimated that 14.9 percent of households were food insecure at least some of the year. Heart disease is the leading cause of death in the US and diabetes is seventh. Metabolic syndrome (MetS) is associated with a twofold increased risk of developing cardiovascular disease and a fivefold increase risk in developing type 2 diabetes. A better understanding of the association between food security and poor metabolic health can improve the effectiveness of public health interventions. 
 
-**Methods:** This study used data from `r nrow(analysis[analysis$subset == T,])` 18-65yr old participants collected as part of NHANES 1999-2014. The association between food insecurity and metabolic syndrome was estimated using ?logistic? regression. We adjusted for gender, race/ethnicity, age, physical activity, smoking status, alcohol use, education and income.  
+**Methods:** This study used data from `r format(nrow(analysis[analysis$subset == T,]), big.mark=",", trim=TRUE)` 18-65yr old participants collected as part of NHANES 1999-2014. The association between food insecurity and MetS was estimated using relative risk regression. We adjusted for race/ethnicity, age, physical activity, smoking status, education and income. Food insecure was analyzed as both a binary (food secure/food insecure) and ordinal (full/marginal/low/very low food security) variable.
 
-**Results:**  The unadjusted prevalence of metabolic syndrome in Food Secure individuals was `r prevalence[1] `% and in Food Insecure individuals was `r prevalence[2] `%. Food insecuirty was associated with metabolic syndrome [adjusted relative risk (ARR) `r paste0(sprintf('%.2f', RR_full[1]))`; 95% CI `r paste0('(', sprintf('%.2f', RR_full[2]), "-", sprintf('%.2f', RR_full[3]), ")") `. The ARR was higher is females `r paste0(sprintf('%.2f', RR_female[1]), '(', sprintf('%.2f', RR_female[2]), '-', sprintf('%.2f', RR_female[3]), ")") ` than in males `r paste0(sprintf('%.2f', RR_male[1]), '(', sprintf('%.2f', RR_male[2]), '-', sprintf('%.2f', RR_male[3]), ")") `. 
+**Results:**  The unadjusted prevalence of MetS in food secure individuals was `r prevalence_noalc[1] `% and in food insecure individuals was `r prevalence_noalc[2] `%. Food insecurity was associated with MetS in females [adjusted relative risk (ARR) `r paste0(sprintf('%.2f', RR_female_noalc[1]), '(', sprintf('%.2f', RR_female_noalc[2]), '-', sprintf('%.2f', RR_female_noalc[3]), ")") `] but not in males [ARR `r paste0(sprintf('%.2f', RR_male_noalc[1]), '(', sprintf('%.2f', RR_male_noalc[2]), '-', sprintf('%.2f', RR_male_noalc[3]), ")") `]. Low food security was associated with MetS (when compared to full food security) in females [ARR `r RR_female_cat_noalc[2]`] but not males [ARR `r paste0(sprintf('%.2f', RR_male_cat_noalc[2,1]), '(', sprintf('%.2f', RR_male_cat_noalc[2,2]), '-', sprintf('%.2f', RR_male_cat_noalc[2,3]), ")")`].
 
-**Conclusions:** Food insecurity is associated with a moderately increased risk of metabolic syndrome and this association is stronger in females than in males. It is important for public health professionals to consider access to affordable high quality food when working to promote good metabolic and cardiovascular health. 
+**Conclusions:** Food insecurity is associated with a moderately increased risk of MetS in females. Further research is required to access the reasons for these gender differences. It is important for public health professionals to consider access to affordable high quality food when working to promote good metabolic and cardiovascular health. 
 
 
 
