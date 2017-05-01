@@ -1,12 +1,12 @@
 ---
 title: "Association of Food Insecurity and Metabolic Syndrome among NHANES Participants 1999-2014"
 author: "Caroline Ledbetter"
-
 output: 
   pdf_document:
     fig_caption: yes
     fig_height: 3.5
     fig_width: 8
+    latex_engine: xelatex
 
 bibliography: /Users/Caroline/Repositories/Capstone-Project/Docs/paper.bib
 csl: /Users/Caroline/Repositories/Capstone-Project/Docs/journal-of-nutrition.csl
@@ -29,24 +29,59 @@ library(gridExtra)
 # Abstract  
 
 # Introduction  
+In the early 1980's there began to be a recognition in the United States that many households faced limited or uncertain access to adequate food differing from malnutrition and chronic hunger. Therefore, in 1995 the 18 item U.S. Food Security Survey Module was added to the Current Population Survey (CPS) to measure the prevalence of food insecurity in the US [@Carlson]. The USDA defines food insecurity as "limited or uncertain availability of nutritionally adequate and safe foods or uncertain ability to acquire acceptable foods in socially acceptable ways"[@Bickel]. In 2011, it was estimated that 14.9 percent of households were food insecure at least some of the year and that the typical food secure household spent 24 percent more on food than the typical food-insecure household of the same size and compistion[@Coleman]. Households reporting food insecurity may be more likely to consume low-nutrtient energy dense foods [@Drewnowski] and report a decrease in the frequency of consumption of fruits and vegetables[@Kendall]. Previous research has found an association between food insecurity and hyperglycemia, hypertension, diabetes[@Seligman; @Gucciardi], peripheral arterial disease [@Redmond], poor cardiovascular health [@Saiz], increased in BMI in young women[@Gooding], and poor health outcomes in disabled adults[@Brucker]. Berkowitz et al. also found an association between food insecuirty and poor metabilic control in adults with diabetes[@Berkowitz]. 
 
-Food Security is access at all times to enough food for an active, healthy life; food insecurity exists when ever the availability of nutritionally adequate and safe foods is limited or uncertain[@RN81]. In 2010, it was estimated that approximately 50 million Americans were food insecure [@RN82]. Houselholds reporting food insecurity report a decrease in the frequency of comnsumption of fruits and vegetables[@RN86]. Previous has research has found an association between food insecurity and hyperlipidemia, hypertension, diabetes[@RN80; @RN89], peripheral arterial disease [@RN88], and poor cardiovascular health [@RN87]. 
+Metabolic syndrome is the presence of multiple interrelated risk factors for cardiovascular disease (CVD) and diabetes. Metabolic syndrome is associated with a two-fold increased risk for developing CVD and a five-fold increase in type 2 diabetes mellitus. [@Alberti] According to the CDC, in 2014 heart disease was the leading cause of death and diabetes was the 7th leading cause of death[@CDCdeath].  A better understanding of the association between food security and poor cardiovascular and metabolic health can improve the effectiveness of public health interventions. To date, no studies have explored the association between food security and early indicators of poor cardiometabolic health other than BMI, but evidence suggests BMI may be a poor indicator[@Tomiyama].
 
 # Methods  
+*Data*  
+This study used publically available de-identified data from the CDC collected as part of the National Health and Nutrition Examination Study (NHANES), a cross-sectional, annual survey representative of the non-institutionalized US population[@NHANES]. The survey is conducted annually using a complex survey design and data are bundled into two-year cycles. Data was combined from eight NHANES cycles (1999 - 2014).  Only individuals who were selected for the morning examination are included as fasting glucose and triglyceride samples were only collected in those sessions. Individuals under 18 and over 65 were excluded as were pregnant women. Participants with missing exposure, outcome, and covariate data were also excluded from analysis.
+
+Food insecurity was measured by the Adult Food Security Category. This information was captured during the Food Security Questionnaire. NHANES used the 12-month scale of the US Household Food Security Survey Module (FSSM), which consists of 18 items and has a three-stage design[@NHANES]. The screening design keeps respondent burden to a minimum as most households are asked only three questions (five in households with children). The USDA evaluated the reliability of the questionnaire using both traditional methods such as Spearman-Brown, Rulon’s and Cronbach’s alpha and novel methods to account for the high proportion of respondents that answer all questions in the negative[@Hamilton]. All measures gave values greater than .69 indicating good reliability. Responses are scored into four categories. In 2006, the food security category names were changed but the criteria did not [@Eisenmann; @NHANES]. '`r levels(analysis$FoodSecurity)[1]`' was defined as no to all items, '`r levels(analysis$FoodSecurity)[2]`' as yes to 2 or less items, '`r levels(analysis$FoodSecurity)[3]`' as yes to three to five items and '`r levels(analysis$FoodSecurity)[4]`' as yes to six to ten items. (Only 10 items are used in the scoring of adult food security, the remaining eight are used for child food security.) Responses to individual questions was not provided for confidentiality reasons. Food insecurity was defined as those indviduals whose reported food security was 'full food security' or 'marginal food security' following guidance by the USDA[@Bickel].(Table 1)
+
+``` {r table one}
+
+tbl <- matrix(c("0", "1-2", '3-5', '6-10', levels(analysis$FoodSecurity), 'Food Secure', '" "', 'Food Insecure', '" "'), ncol = 3)
+rownames(tbl) <- NULL
+colnames(tbl) <- c('Number of Yes Responses', 'Food Security Categoty', 'Food Security Status')
+
+panderOptions('table.split.table', Inf)
+set.alignment('center')
+pander(tbl, caption = 'Food Security Categories and Status')
+```
+
+Metabolic syndrome was defined using the harmonization criteria proposed in the joint interim statement of the International Diabetes Federation Task Force on Epidemiology and Prevention; National Heart, Lung, and Blood Institute; American Heart Association; World Heart Federation; International Atherosclerosis Society; and International Association for the Study of Obesity[@Alberti]. Individuals who met three or more of the following criteria were deemed to have meatbolic syndrome: 1) waist circumference: $\geq$ 102 cm for men and $\geq$ 88 cm for women 2) blood pressure: average systolic $\geq$ 130 mm Hg or average diastolic $\geq$ 85 mm Hg or reported taking a prescribed drug to lower blood pressure 3) triglycerides: $\geq$ 150 mg/dL or reported taking a prescirbed drug to lower cholesterol 4) HDL: $\geq$ 40 mg/dL men and $\geq$ 50 mg/dL women 5)fasting glucose: $\geq$ 100mg/dL or reported taking a prescribed drug to lower blood sugar (Table 2)
+
+```{r met synd criteria}
+crit <- matrix(c('\\(\\geq\\) 102 cm for men and \\(\\geq\\) 88 cm for women',
+          'average systolic \\(\\geq\\) 130 mm Hg or average diastolic \\(\\geq\\) 85 mm Hg or reported taking a prescribed drug to lower blood pressure',
+          '\\(\\geq\\) 150 mg/dL or reported taking a prescirbed drug to lower cholesterol',
+          '< 40 mg/dL men and < 50 mg/dL women',
+          ' \\(\\geq\\) 100mg/dL or reported taking a prescribed drug to lower blood sugar'), 
+          ncol =1)
+rownames(crit) <- c('Waist Circumference', 'Blood Pressure', 'Triglycerides', 'HDL', 'Fasting Glucose')
+colnames(crit) <- 'Criteria'
+panderOptions('table.split.table', Inf)
+set.alignment('left', row.names = 'left' )
+pander(crit, 
+       caption = 'Individuals with 3 or more criteria were classified as having metabolic syndrome')
+
+```
+
+*Analysis*  
+All analysis was performed using the survey package v(`r packageVersion('lmerTest')`) [@survey] in `r R.Version()$version.string` [@R].
 
 # Results   
 
 \newpage
-```{r table one}
+```{r demographics uw}
 panderOptions('table.split.table', Inf)
-set.alignment('center', row.names = 'left')
-pander(table1, caption = 'Charactersitcs of Study Participants by Food Security Status')
 set.alignment('center', row.names = 'left')
 pander(table1_alt, 
        caption = 'Charactersitcs of Study Participants by Food Security Category')
 ```
 
-```{r table two}
+```{r demograpics w}
 panderOptions('table.split.table', Inf)
 set.alignment('center', row.names = 'left')
 pander(table2, caption = 'Weighted Charactersitcs of Study Participants by Food Security Status')
@@ -88,79 +123,57 @@ CItxt <- function(obj) {
   return(z)
 }
 
-RR_basic <- CItxt(RR_basic)
 RR_basic_noalc <- CItxt(RR_basic_noalc)
-
+RR_basic_noalc2 <- apply(RR_basic_noalc2, MARGIN = 1, CItxt)
 # unadjusted prevalence and Crude Ratios - Dichotimous Food Insecurity
-UnadjTbl1 <- matrix(c('',prevalence, RR_basic, '',prevalence_noalc, RR_basic_noalc),
-                     ncol = 2, 
+UnadjTbl1 <- matrix(c('\\ ', prevalence_noalc, '---', prevalence_alt_noalc,
+                      '\\ ', '\\ ', RR_basic_noalc, 
+                      '\\ ', RR_basic_noalc2),
+                     ncol = 1, 
                      dimnames = list(c('Unadjusted Prevalence',
                                        '\\ Food Secure',
                                        '\\ Food Insecure',
-                                       'Crude Risk Ratio'), 
-                                     c('Metabolic Syndrome (missing alc excl)', 
-                                       'Metabolic Syndrome (missing alc not excl)')))
+                                       '---',
+                                       '\\ Full food security', 
+                                       '\\ Marginal food security', 
+                                       '\\ Low Food security', 
+                                       '\\ Very low Food security',
+                                       'Crude Risk Ratio',
+                                       'vs.  Food Secure', 
+                                       '\\ Food Insecure',
+                                       'vs. Full Food Security ', 
+                                       '\\ Marginal Food Security', 
+                                       '\\ Low Food Security', 
+                                       '\\ Very Low Food security'), 
+                                     c('Metabolic Syndrome')))
 panderOptions('table.split.table', Inf)
 set.alignment('center', row.names = 'left')
 pander(UnadjTbl1, 
        caption = 'Unadjusted Prevalence and Relative Risk Ratio of Metabolic Syndrome')
 
-
-# unadjusted prevalence and Crude Ratios - Categorical Food Security
-RR_basic2 <- apply(RR_basic2, MARGIN = 1, CItxt)
-RR_basic_noalc2 <- apply(RR_basic_noalc2, MARGIN = 1, CItxt)
-
-UnadjTbl2 <- matrix(c('', prevalence_alt, '', RR_basic2, '',prevalence_alt_noalc, 
-                      '', RR_basic_noalc2), ncol = 2, 
-                     dimnames = list(
-                       c('Unadjusted Prevalence', '\\ Full food security', 
-                         '\\ Marginal food security', 
-                         '\\ Low Food security',
-                         '\\ Very low Food security', 
-                         'Crude Risk Ratio (vs full food security)',
-                         '\\ Marginal food security',
-                         '\\ Low food security',
-                         '\\ Very low food security'), 
-                       c('Metabolic Syndrome (missing alc excl)', 
-                         'Metabolic Syndrome (missing alc not excl)')))
-panderOptions('table.split.table', Inf)
-set.alignment('center', row.names = 'left')
-pander(UnadjTbl2, 
-       caption = 'Unadjusted Prevalence and Relative Risk Ratio of Metabolic Syndrome')
-
-
-# dicotimous food security with and without alcolhol
+# dicotimous food security
 RR_male <- CItxt(RR_male)
 RR_female <- CItxt(RR_female)
 RR_male_noalc <- CItxt(RR_male_noalc)
 RR_female_noalc <- CItxt(RR_female_noalc)
-
-BinTab <- matrix(c(RR_male, RR_female, RR_male_noalc, RR_female_noalc), nrow = 2,
-                 dimnames = list(c('Male', 'Female'), 
-                                 c('Adj RR', 'Adj RR not adj for alc')))
-set.alignment('center', row.names = 'left')
-pander(BinTab, 
-       caption = 'Adjusted Risk Ratio Metabolic Syndrome by Food Insecurity Status')
-
-
-# Categorical Food Security Status
-RR_male_cat <- apply(RR_male_cat, 1, CItxt)
 RR_male_cat_noalc <- apply(RR_male_cat_noalc, 1, CItxt)
 
-CatTab <- matrix(c('', RR_male_cat, '', RR_male_cat_noalc,
-                   '', RR_female_cat, '', RR_female_cat_noalc), ncol = 2,
-                 dimnames = list(c('Adj RR (vs full food security)', 
-                                   '\\ Marginal food security', 
-                                   '\\ Low food security', 
-                                   '\\ Very low food security',
-                                   'Adj RR not adj for alc (vs full food security)', 
-                                   '\\ Marginal food security', 
-                                   '\\ Low food security', 
-                                   '\\ Very low food security'), 
-                                 c('Males', 'Females')))
+AdjTab <- matrix(c('\\ ', '\\ ', RR_male_noalc, '\\ ', RR_male_cat_noalc,
+                   '\\ ', '\\ ', RR_female_noalc, '', 
+                   RR_female_cat_noalc), ncol = 2, byrow = F, 
+                 dimnames = list(c('Adjusted Risk Ratio', 
+                                   'vs. Food Secure', 
+                                   '\\ Food Insecure', 
+                                   'vs. Full Food Security ', 
+                                   '\\ Marginal Food Security', 
+                                   '\\ Low Food Security', 
+                                   '\\ Very Low Food security'),
+                                 c('Male', 'Female')))
+                 
 set.alignment('center', row.names = 'left')
-pander(CatTab, 
-       caption = 'Adjusted Risk Ratio Metabolic Syndrome by Food Security Category')
+pander(AdjTab, 
+       caption = 'Adjusted Risk Ratio Metabolic Syndrome by Food Insecurity Status/Category')
+
 ```
 
 
