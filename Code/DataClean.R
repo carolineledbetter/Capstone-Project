@@ -173,7 +173,7 @@ for(i in allcyc[1:4]){
   assign(paste('PAQ', i, sep = ''), ds)
 }; remove(i,ds)
 
-for(i in allcyc[4:8]){
+for(i in allcyc[5:8]){
   ds <- get(paste('PAQ', i, sep = ''))
   ds <- ds[,c('seqn', 'paq620', 'paq665')]
   ds$pad320 <- NA
@@ -227,27 +227,27 @@ for(i in allcyc[7:8]){
 for(i in allcyc){
   ds1 <- get(paste('FGI', i, sep = ''))
   ds2 <- get(paste('FSQ', i, sep = ''))
-  ds1 <- merge(ds1, ds2, by = 'seqn')
+  ds1 <- merge(ds1, ds2, by = 'seqn', all.x = T)
   ds2 <- get(paste('BMD', i, sep = ''))
-  ds1 <- merge(ds1, ds2, by = 'seqn')
+  ds1 <- merge(ds1, ds2, by = 'seqn', all.x = T)
   ds2 <- get(paste('BPD', i, sep = ''))
-  ds1 <- merge(ds1, ds2, by = 'seqn')
+  ds1 <- merge(ds1, ds2, by = 'seqn', all.x = T)
   ds2 <- get(paste('BPQ', i, sep = ''))
-  ds1 <- merge(ds1, ds2, by = 'seqn')  
+  ds1 <- merge(ds1, ds2, by = 'seqn', all.x = T)  
   ds2 <- get(paste('HDL', i, sep = ''))
-  ds1 <- merge(ds1, ds2, by = 'seqn')
+  ds1 <- merge(ds1, ds2, by = 'seqn', all.x = T)
   ds2 <- get(paste('TRG', i, sep = ''))
-  ds1 <- merge(ds1, ds2, by = 'seqn')
+  ds1 <- merge(ds1, ds2, by = 'seqn', all.x = T)
   ds2 <- get(paste('DIQ', i, sep = ''))
-  ds1 <- merge(ds1, ds2, by = 'seqn')
+  ds1 <- merge(ds1, ds2, by = 'seqn', all.x = T)
   ds2 <- get(paste('DEM', i, sep = ''))
-  ds1 <- merge(ds1, ds2, by = 'seqn')
+  ds1 <- merge(ds1, ds2, by = 'seqn', all.x = T)
   ds2 <- get(paste('ALC', i, sep = ''))
-  ds1 <- merge(ds1, ds2, by = 'seqn')
+  ds1 <- merge(ds1, ds2, by = 'seqn', all.x = T)
   ds2 <- get(paste('SMQ', i, sep = ''))
-  ds1 <- merge(ds1, ds2, by = 'seqn')
+  ds1 <- merge(ds1, ds2, by = 'seqn', all.x = T)
   ds2 <- get(paste('PAQ', i, sep = ''))
-  ds1 <- merge(ds1, ds2, by = 'seqn')
+  ds1 <- merge(ds1, ds2, by = 'seqn', all.x = T)
   ds1$yr <- i
   assign(paste('all',i, sep = ''), ds1)
 }; remove(i,ds1,ds2)
@@ -321,10 +321,10 @@ analysis$syndrome[analysis$metabolic < 3] <- F
 analysis$syndrome[analysis$metabolic >= 3] <- T
 
 #########################################################################################
-# if food security is 2,3, or 4 then individual is conseidered food insecure
+# if food security is 3, or 4 then individual is considered food insecure
 analysis$foodinsecure <- NA
-analysis$foodinsecure[analysis$fsdad == 1] <- F
-analysis$foodinsecure[analysis$fsdad > 1] <- T
+analysis$foodinsecure[analysis$fsdad <= 2] <- F
+analysis$foodinsecure[analysis$fsdad > 2] <- T
 
 
 #########################################################################################
