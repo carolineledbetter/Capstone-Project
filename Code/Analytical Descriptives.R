@@ -19,12 +19,12 @@ analysis <- rename(analysis, c('alcuse' = 'Alcohol Use', 'smoker' = 'Smoking Sta
 
 # Setup categorical Food Insecurity
 analysis$'Food Insecure' <- factor(analysis$foodinsecure, exclude = NULL)
-levels(analysis$`Food Insecure`) <- list('Not Food Insecure' = FALSE, 'Food Insecure' = TRUE, 
+levels(analysis$`Food Insecure`) <- list('Food Secure' = FALSE, 'Food Insecure' = TRUE, 
                                          'Missing' = NA)
 
 # also look at non dichotimized Food Security
 analysis$'Food Security' <- factor(analysis$fsdad, exclude = NULL)
-levels(analysis$`Food Security`) <- list('Fully Food Secure' = 1, 'Marginal Food Security' = 2, 
+levels(analysis$`Food Security`) <- list('Full Food Security' = 1, 'Marginal Food Security' = 2, 
                                          'Low Food Security' = 3, 'Very Low Food Security' = 4, 
                                          'Missing' = NA)
 
@@ -33,7 +33,7 @@ table1 <- Table1(c('Gender', 'Race', 'Education', 'Income', 'Alcohol Use', 'Smok
                    'Moderate Phys Act', 'Age'), 'Food Insecure', 
                  analysis[analysis$subset == T,], incl_missing = T)
 
-table1_alt <- Table1(c('Gender', 'Race', 'Education', 'Income', 'Alcohol Use', 'Smoking Status', 
+table1_alt <- Table1(c('Gender', 'Race', 'Education', 'Income', 'Smoking Status', 
                        'Moderate Phys Act', 'Age'), 'Food Security', 
                      analysis[analysis$subset == T,], incl_missing = T)
 
@@ -46,7 +46,7 @@ names(analysis) <- gsub(' ', '\\.', names(analysis))
 
 # Setup binary Food Insecurity (exlude missing)
 analysis$FoodInsecure <- factor(analysis$foodinsecure)
-levels(analysis$FoodInsecure) <- list('Not Food Insecure' = 'FALSE', 
+levels(analysis$FoodInsecure) <- list('Food Secure' = 'FALSE', 
                                       'Food Insecure' = 'TRUE')
 
 # Setup categorical Food Security (exlude missing)
@@ -59,13 +59,13 @@ library(survey)
 design <- svydesign(id=~sdmvpsu, strata=~sdmvstra, weights=~samplewgt, 
                     nest=TRUE,data=analysis)
 
-table2 <- Table1Weighted(c('Gender', 'Race', 'Education', 'Income', 'Alcohol.Use',
+table2 <- Table1Weighted(c('Gender', 'Race', 'Education', 'Income', 
                                    'Smoking.Status', 'Moderate.Phys.Act', 'Age'),
-                                 'FoodInsecure', design = subset(design, subset2 == T))
+                                 'FoodInsecure', design = subset(design, subset3 == T))
 
-table2alt <- Table1Weighted(c('Gender', 'Race', 'Education', 'Income', 'Alcohol.Use',
+table2alt <- Table1Weighted(c('Gender', 'Race', 'Education', 'Income',
                            'Smoking.Status', 'Moderate.Phys.Act', 'Age'),
-                         'FoodSecurity', design = subset(design, subset2 == T))
+                         'FoodSecurity', design = subset(design, subset3 == T))
 
 # put spaces back in for '.'
 rownames(table2) <- gsub('\\.', ' ', rownames(table2))
