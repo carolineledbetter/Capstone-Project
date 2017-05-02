@@ -32,8 +32,8 @@ library(grid)
 library(gridExtra)
 t <- 0 #index for tables
 f <- 0 #index for figures
-#increment function for tables/figs (this saves you from having to make sure which table you are on if you reference in
-# text)
+# increment function for tables/figs (this saves you from having to make sure which table 
+# you are on if you reference in text)
 inc <- function(x)
 {
   eval.parent(substitute(x <- x + 1))
@@ -55,8 +55,9 @@ This study used publicly available de-identified data from the CDC collected as 
 Food insecurity was measured by the Adult Food Security Category. This information was captured during the Food Security Questionnaire. NHANES used the 12-month scale of the US Household Food Security Survey Module (FSSM), which consists of 18 items and has a three-stage design[@NHANES]. The screening design keeps respondent burden to a minimum as most households are asked only three questions (five in households with children). The USDA evaluated the reliability of the questionnaire using both traditional methods such as Spearman-Brown, Rulon’s and Cronbach’s alpha and novel methods to account for the high proportion of respondents that answer all questions in the negative[@Hamilton]. All measures gave values greater than .69 indicating good reliability. Responses are scored into four categories. In 2006, the food security category names were changed but the criteria did not [@Eisenmann; @NHANES]. '`r levels(analysis$FoodSecurity)[1]`' was defined as no to all items, '`r levels(analysis$FoodSecurity)[2]`' as yes to 2 or less items, '`r levels(analysis$FoodSecurity)[3]`' as yes to three to five items and '`r levels(analysis$FoodSecurity)[4]`' as yes to six to ten items. (Only 10 items are used in the scoring of adult food security, the remaining eight are used for child food security.) Responses to individual questions was not provided for confidentiality reasons. Food insecurity was defined as those individuals whose reported food security was 'full food security' or 'marginal food security' following guidance by the USDA[@Bickel].(Table `r inc(t)`)
 
 ``` {r food security definitions}
-
-tbl <- matrix(c("0", "1-2", '3-5', '6-10', levels(analysis$FoodSecurity), 'Food Secure', '" "', 'Food Insecure', '" "'), ncol = 3)
+# Create table with food security definitions
+tbl <- matrix(c("0", "1-2", '3-5', '6-10', levels(analysis$FoodSecurity), 'Food Secure', '" "', 
+                'Food Insecure', '" "'), ncol = 3)
 rownames(tbl) <- NULL
 colnames(tbl) <- c('Number of Yes Responses', 'Food Security Categoty', 'Food Security Status')
 
@@ -68,8 +69,10 @@ pander(tbl, caption = 'Food Security Categories and Status')
 Metabolic syndrome was defined using the harmonization criteria proposed in the joint interim statement of the International Diabetes Federation Task Force on Epidemiology and Prevention; National Heart, Lung, and Blood Institute; American Heart Association; World Heart Federation; International Atherosclerosis Society; and International Association for the Study of Obesity[@Alberti]. Individuals who met three or more of the following criteria were deemed to have metabolic syndrome: 1) waist circumference: $\geq$ 102 cm for men and $\geq$ 88 cm for women 2) blood pressure: average systolic $\geq$ 130 mm Hg or average diastolic $\geq$ 85 mm Hg or reported taking a prescribed drug to lower blood pressure 3) triglycerides: $\geq$ 150 mg/dL or reported taking a prescribed drug to lower cholesterol 4) HDL: $\geq$ 40 mg/dL men and $\geq$ 50 mg/dL women 5)fasting glucose: $\geq$ 100mg/dL or reported taking a prescribed drug to lower blood sugar (Table `r inc(t)`).
 
 ```{r met synd criteria}
+# Create table with metabolic syndrome criteria
 crit <- matrix(c('\\(\\geq\\) 102 cm for men and \\(\\geq\\) 88 cm for women',
-          'average systolic \\(\\geq\\) 130 mm Hg or average diastolic \\(\\geq\\) 85 mm Hg or reported taking a prescribed drug to lower blood pressure',
+          'average systolic \\(\\geq\\) 130 mm Hg or average diastolic \\(\\geq\\) 
+          85 mm Hg or reported taking a prescribed drug to lower blood pressure',
           '\\(\\geq\\) 150 mg/dL or reported taking a prescirbed drug to lower cholesterol',
           '< 40 mg/dL men and < 50 mg/dL women',
           ' \\(\\geq\\) 100mg/dL or reported taking a prescribed drug to lower blood sugar'), 
@@ -90,11 +93,14 @@ All analysis was performed using the survey package v(`r packageVersion('lmerTes
 
 
 ``` {r create n vars}
-#this creates variables for the various numbers used in the text and the flow chart
+# this creates variables for the various numbers used in the text and the flow chart
 n_tot <- format(nrow(analysis), big.mark = ',', trim = T)
-n_incl_age <- format(nrow(analysis) - nrow(analysis[analysis$exclreason %in% 'Age',]), big.mark = ',', trim = T)
-n_excl_preg <- format(nrow(analysis[analysis$exclreason %in%  'Pregnancy',]), big.mark = ',', trim = T)
-n_excl_outcome <- format(nrow(analysis[analysis$exclreason %in%  'Outcome',]), big.mark = ',', trim = T)
+n_incl_age <- format(nrow(analysis) - nrow(analysis[analysis$exclreason %in% 'Age',]), 
+                     big.mark = ',', trim = T)
+n_excl_preg <- format(nrow(analysis[analysis$exclreason %in%  'Pregnancy',]), 
+                      big.mark = ',', trim = T)
+n_excl_outcome <- format(nrow(analysis[analysis$exclreason %in%  'Outcome',]), 
+                         big.mark = ',', trim = T)
 n_excl_exp <- format(nrow(analysis[is.na(analysis$foodinsecure) & 
                                      analysis$subset == T,]), big.mark = ',', trim = T)
 n_excl_covariates <- format(nrow(analysis[!is.na(analysis$foodinsecure) & analysis$subset == T 
@@ -106,6 +112,7 @@ n_analysis <- format(nrow(analysis[analysis$subset3 == T,]), big.mark = ',', tri
 There were `r n_tot` participants who were selected for the morning examination (fasting subsample MEC weight not equal to zero) of which `r n_incl_age` were 18-65 years old, `r n_excl_preg` were excluded for pregnancy. `r n_excl_outcome` were missing information on metabolic syndrome, `r n_excl_exp` were missing information on food security, and `r n_excl_covariates` were missing covariate information; these participants were also excluded from the analysis, giving a final n =  `r n_analysis`. (Fig `r inc(f)`) Unweighted participant characteristics and missing food security and covariate information are given in Table `r inc(t)`. 
 
 ``` {r n flowchat, fig.heigt = 4, fig.width = 8, fig.cap = "Inclusion/Exclusion Criteria"}
+# create a flow chart to show inclusion/exclusion criteria
 library(diagram)
 par(mar = c(1,1,1,1))
 openplotmat()
@@ -119,18 +126,23 @@ for (i in 1:nr)
   arrpos[i,] <- straightarrow (to = elpos[fromto[i, 2], ],
                                from = elpos[fromto[i, 1], ],
                                lwd = 1, arr.pos = 0.6, arr.length = 0.2)
-textrect(elpos[1,], radx = 0.2, rady = 0.1, lab = c("Fasting Subsample", paste0('N = ', n_tot)), cex = 1)
-textrect(elpos[2,], radx = 0.2, rady = 0.1, lab = c("18-65 yr old", paste0('N = ', n_incl_age)), cex = 1)
-textrect(c(0.7, 0.325), radx = 0.225, rady = 0.15, lab = c("Excluded:", paste0('N = ', n_excl_preg, ' (Pregnancy)'),
-                                                       paste0('N = ', n_excl_outcome, ' (Missing Outcomee)'), 
-                                                       paste0('N = ', n_excl_exp, ' (Missing Exposure)'), 
-                                                       paste0('N = ', n_excl_covariates, ' (Missing Covariates)')), 
+textrect(elpos[1,], radx = 0.2, rady = 0.1, 
+         lab = c("Fasting Subsample", paste0('N = ', n_tot)), cex = 1)
+textrect(elpos[2,], radx = 0.2, rady = 0.1, 
+         lab = c("18-65 yr old", paste0('N = ', n_incl_age)), cex = 1)
+textrect(c(0.7, 0.325), radx = 0.225, rady = 0.15, 
+         lab = c("Excluded:", 
+                 paste0('N = ', n_excl_preg, ' (Pregnancy)'), 
+                 paste0('N = ', n_excl_outcome, ' (Missing Outcomee)'), 
+                 paste0('N = ', n_excl_exp, ' (Missing Exposure)'), 
+                 paste0('N = ', n_excl_covariates, ' (Missing Covariates)')), 
          cex = 0.75)
 textrect(elpos[5,], radx = 0.2, rady = 0.07, lab = paste0('N = ', n_analysis), cex = 1)
 ```
 
 \newpage
 ```{r demographics uw}
+# unweighted demographics table
 table1_alt <- cbind(row.names(table1_alt), table1_alt)
 row.names(table1_alt) <- NULL
 panderOptions('table.split.table', Inf)
@@ -145,11 +157,7 @@ pander(table1_alt,
 \blandscape
 
 ```{r demograpics w}
-# set.alignment('center', row.names = 'left')
-# pander(table2, caption = 'Weighted Charactersitcs of Study Participants by Food Security Status')
-# set.alignment('center', row.names = 'left')
-# pander(table2alt, 
-#        caption = 'Weighted Charactersitcs of Study Participants by Food Security Category')
+# weighted demographics table
 tblweig <- cbind(row.names(table2),table2[,-3], table2alt)
 row.names(tblweig) <- NULL
 panderOptions('table.split.cells', c(40, rep(11,7)))
@@ -197,9 +205,11 @@ CItxt <- function(obj) {
   return(z)
 }
 
+# Create table of prevalence and crude relative risks
+
 RR_basic_noalc <- CItxt(RR_basic_noalc)
 RR_basic_noalc2 <- apply(RR_basic_noalc2, MARGIN = 1, CItxt)
-# unadjusted prevalence and Crude Ratios - Dichotimous Food Insecurity
+
 UnadjTbl1 <- matrix(c('\\ ', prevalence_noalc, '---', prevalence_alt_noalc,
                       '\\ ', '\\ ', RR_basic_noalc, 
                       '\\ ', RR_basic_noalc2),
@@ -212,7 +222,7 @@ UnadjTbl1 <- matrix(c('\\ ', prevalence_noalc, '---', prevalence_alt_noalc,
                                        '\\ Marginal food security', 
                                        '\\ Low Food security', 
                                        '\\ Very low Food security',
-                                       'Crude Risk Ratio',
+                                       'Crude Relative Risk',
                                        'vs.  Food Secure', 
                                        '\\ Food Insecure',
                                        'vs. Full Food Security ', 
@@ -223,9 +233,9 @@ UnadjTbl1 <- matrix(c('\\ ', prevalence_noalc, '---', prevalence_alt_noalc,
 panderOptions('table.split.table', Inf)
 set.alignment('center', row.names = 'left')
 pander(UnadjTbl1, 
-       caption = 'Unadjusted Prevalence and Relative Risk Ratio of Metabolic Syndrome')
+       caption = 'Unadjusted Prevalence and Relative Risk of Metabolic Syndrome')
 
-# dicotimous food security
+# Adjusted relative risks stratified by gender
 RR_male <- CItxt(RR_male)
 RR_female <- CItxt(RR_female)
 RR_male_noalc <- CItxt(RR_male_noalc)
