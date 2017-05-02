@@ -374,9 +374,9 @@ analysis$Education[analysis$dmdeduc3 == 15] <- 'Some College/AA'
 
 # income
 analysis$Income <- factor(analysis$indfminc, exclude = c(NA, 12, 77, 99))
-levels(analysis$Income) <- list('Under $20,000' = c(1:4,13), '$20,000 - $54,999' = 5:8,
+levels(analysis$Income) <- list('< $20,000' = c(1:4,13), '$20,000 - $54,999' = 5:8,
                                 '$55,000-$74,999' = 9:10,
-                                '$75,000 and Over' = c(11, 14:15))
+                                '\\(\\geq\\) $75,000' = c(11, 14:15))
 
 # Moderate Physical Activity
 analysis$ModerateActivity <- factor(NA, levels = c('Yes', 'No'))
@@ -406,9 +406,10 @@ sapply(analysis[, c('Gender', 'Race', 'Education', 'Income', 'ModerateActivity',
 
 #########################################################################################
 # combine 2 exclusion criteria (include only those in subset = T and exclude those for 
-# whom excludecov = T
+# whom excludecov = T, also exclude those missing exposure)
 
 analysis$subset2 <- analysis$subset
+analysis$subset2[is.na(analysis$foodinsecure)] <- F
 analysis$subset2[analysis$excludecov] <- F
 
 #########################################################################################
@@ -426,6 +427,9 @@ table(analysis$excludecov2) #7355 excluded
 sapply(analysis[, c('Gender', 'Race', 'Education', 'Income', 'ModerateActivity', 
                     'smoker', 'ridageyr')], function(x) sum(is.na(x)));
 
+
+## exclude those missing exposure and covariate info
+analysis$subset3[is.na(analysis$foodinsecure)] <- F
 analysis$subset3[analysis$excludecov2] <- F
 
 # save analysis dataset
