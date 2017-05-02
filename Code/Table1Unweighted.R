@@ -5,8 +5,8 @@ Table1 <- function(rowvars, colvariable, data, incl_missing = F) {
   if (!is.factor(data[,colvariable])) data[,colvariable] <- factor(data[,colvariable])
   #set column names
   Col_n <- table(data[,colvariable])
-  cnames <- c(paste(levels(data[,colvariable])))
-  coln <- c(paste(" (n=", Col_n, ")", sep = ''))
+  cnames <- c(paste0(levels(data[,colvariable]),"\\newline (n= ", format(Col_n, big.mark = ',', trim = T), ')'))
+  # coln <- c(paste(" (n=", Col_n, ")", sep = ''))
   
   #col dimensions
   col_dim <- length(levels(data[,colvariable]))
@@ -45,7 +45,7 @@ Table1 <- function(rowvars, colvariable, data, incl_missing = F) {
   contvars <- rowvars[vartypes == F]
   if (is.numeric(contvars)) continuous_labels <- unlist(lapply(contvars, function(i){names(data)[i]}))
   else continuous_labels <- contvars
-  rnames <- c(" ", " ", binarylabs, nonbinlab," ",continuous_labels) 
+  rnames <- c(" ", binarylabs, nonbinlab," ",continuous_labels) 
 
   #function to return row for binary categorical variables
   returnRowBin <- function(var){
@@ -89,7 +89,7 @@ Table1 <- function(rowvars, colvariable, data, incl_missing = F) {
                                     data.frame, stringsAsFactors=FALSE))
   conttable <- do.call(rbind, lapply(lapply(contvars, returnRowContinuous),
                                      data.frame, stringsAsFactors=FALSE))
-  finaltab <- as.matrix(rbind.data.frame(coln, c(replicate(col_dim,"N(%)")),
+  finaltab <- as.matrix(rbind.data.frame(c(replicate(col_dim,"N(%)")),
                                          cattable,c(replicate(col_dim,"Mean(SD)")),
                                          conttable,
                                          make.row.names = F, stringsAsFactors = F))

@@ -6,8 +6,9 @@ Table1Weighted <- function(rowvars, colvariable, design) {
   if (!is.factor(data[,colvariable])) data[,colvariable] <- factor(data[,colvariable])
   #set column names
   Col_n <- svytable(as.formula(paste0("~", colvariable)), design, round = T)
-  cnames <- c(paste0(levels(data[,colvariable])), 'p-value')
-  coln <- c(paste(" (n=", Col_n, ")", sep = ''), " ")
+  cnames <- c(paste0(levels(data[,colvariable]),"\\newline (n= ", format(Col_n, big.mark = ',', trim = T), ")"), 'p-value')
+  # coln <- c(paste(" (n= ", format(Col_n, big.mark = ',', trim = T)
+  #                , ")", sep = ''), " ")
   
   
   #col dimensions
@@ -35,14 +36,15 @@ Table1Weighted <- function(rowvars, colvariable, design) {
   contvars <- rowvars[vartypes == F]
   if (is.numeric(contvars)) continuous_labels <- unlist(lapply(contvars, function(i){names(data)[i]}))
   else continuous_labels <- contvars
-  rnames <- c(" ", " ", binarylabs, nonbinlab," ",continuous_labels) 
+  rnames <- c(" ", binarylabs, nonbinlab," ",continuous_labels) 
 
   #function to return row for binary categorical variables
   returnRowBin <- function(var){
     n <- svytable(as.formula(paste0("~", var, ' + ', colvariable)), design, 
                   round = T)
     percent <- round(n[2,]/apply(n,2,sum)*100, digits = 0)
-    n_per <- c(paste(n[2,], "(", percent, ")", sep = ''), '')
+    n_per <- c(paste(format(n[2,], big.mark = ',', trim = T), 
+                     "(", percent, ")", sep = ''), '')
     p <- summary(n)$statistic$p.value
     if (p < 0.01) p <- '<0.01'
     else p <- sprintf('%.2f',p)
@@ -59,7 +61,8 @@ Table1Weighted <- function(rowvars, colvariable, design) {
     p <- summary(n)$statistic$p.value
     if (p < 0.01) p <- '<0.01'
     else p <- sprintf('%.2f',p)
-    n_per <- cbind(matrix(paste(n, "(", percent, ")", sep = ''),nrow = levs, 
+    n_per <- cbind(matrix(paste(format(n, big.mark = ',', trim = T), 
+                                "(", percent, ")", sep = ''),nrow = levs, 
                           byrow = F), replicate(levs,""))
     returnRow <- rbind(c(replicate(col_dim,""), p), n_per)
     return(returnRow)
@@ -92,7 +95,7 @@ Table1Weighted <- function(rowvars, colvariable, design) {
                                     data.frame, stringsAsFactors=FALSE))
   conttable <- do.call(rbind, lapply(lapply(contvars, returnRowContinuous),
                                      data.frame, stringsAsFactors=FALSE))
-  finaltab <- as.matrix(rbind.data.frame(coln, c(replicate(col_dim,"N(%)"), ''), 
+  finaltab <- as.matrix(rbind.data.frame(c(replicate(col_dim,"N(%)"), ''), 
                                          cattable,c(replicate(col_dim,"Mean(SD)"),
                                                     ''),
                                          conttable,
