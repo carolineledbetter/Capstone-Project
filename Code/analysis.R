@@ -328,7 +328,7 @@ summary(rr_nogenderInteraction2 <- svyglm(MetabolicSyndrome ~ Gender +
                                          subset = subset2 == T, family = quasibinomial(log),
                                          start = c(-0.5, rep(0,43)), maxit = 50))
 
-anova(rrfullmodel, rr_nogenderInteraction, force = T)
+genderint <- anova(rrfullmodel, rr_nogenderInteraction, force = T)
 # p = <0.0001 significant
 
 
@@ -500,6 +500,7 @@ RR_female_cat_noalc <- sapply(0:2, function(i) {
 })
 
 save(list = c(ls(pattern = 'RR_.*'), ls(pattern = 'plot'), ls(pattern = 'p_FS'), 
-              ls(pattern = 'myleg.*'), ls(pattern = 'preval.*'), 'analysis'), 
+              ls(pattern = 'myleg.*'), ls(pattern = 'preval.*'), 'genderint', 
+              'analysis'), 
      file = '~/Repositories/Data/Capstone/analysis_report.rdata')
 
