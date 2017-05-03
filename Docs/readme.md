@@ -9,5 +9,6 @@ Data Dictionary.pdf | contains a data dictionary for the analysis data set creat
 Capstone Proposal.pdf | contains the submitted proposal for the capstone course at Colorado School of Public Health
 Paper.bib | contains the bibliography for the final paper.
 Journal-of-nutrition.csl | contains information for the Journal of Nutrition style guide.
+american-medical-association.csl | contains information for the AMA style guide.
 
 
