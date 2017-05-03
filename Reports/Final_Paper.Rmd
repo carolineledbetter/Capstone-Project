@@ -1,7 +1,10 @@
 ---
-title: "Association of Food Insecurity and Metabolic Syndrome among NHANES Participants 1999-2014"
-author: "Caroline Ledbetter"
-
+title: Association of Food Insecurity and Metabolic Syndrome among NHANES Participants 1999-2014
+author: 
+- Caroline Ledbetter, Anna Baron, PhD, Dana Dabalea, PhD
+date: "Colorado School of Public Health"
+  
+  
 header-includes:
 - \usepackage{lscape}
 - \newcommand{\blandscape}{\begin{landscape}}
@@ -170,7 +173,7 @@ pander(tblweig,
 \elandscape
 
 \newpage
-The prevalence of metabolic syndrome increases with age but has not changed over time. However, the prevalence of food insecurity while decreasing with age is has been increasing in over time. (Figs `r inc(f)` & `r inc(f)`)
+The prevalence of metabolic syndrome increased with age but has not changed over time. However the prevalence of food insecurity while decreasing with age, has been increasing in over time. (Figs `r inc(f)` & `r inc(f)`). 
 
 ```{r age-period graphs, fig.cap= "Prevalence of Metabolic Syndrome and Food Insecurity by Age and NHANES Cycle"}
 # title2 <- 
@@ -263,6 +266,7 @@ pander(AdjTab,
 
 
 # Discussion  
+The biggest limitation of this study is the cross-sectional design. Metabolic syndrome increases over time as would be expected as poor diet and lifestyle take time to
 
 # Conculsions  
 
