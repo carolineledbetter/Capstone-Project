@@ -13,7 +13,7 @@ header-includes:
 output: 
   pdf_document:
     fig_caption: yes
-    fig_height: 3.5
+    fig_height: 2.5
     fig_width: 8
     latex_engine: xelatex
 
@@ -44,14 +44,18 @@ inc <- function(x)
 }
 ```
 
-# Abstract  
+## Abstract
+**Background:** In 2011, it was estimated that 14.9 percent of households were food insecure at least some of the year. Heart disease is the leading cause of death in the US and diabetes is seventh. Metabolic syndrome (MetS) is associated with a twofold increased risk of developing cardiovascular disease and a fivefold increase risk in developing type 2 diabetes. A better understanding of the association between food security and poor metabolic health can improve the effectiveness of public health interventions.  
+**Methods:** This study used data from `r format(nrow(analysis[analysis$subset == T,]), big.mark=",", trim=TRUE)` 18-65yr old participants collected as part of NHANES 1999-2014. The association between food insecurity and MetS was estimated using relative risk regression. We adjusted for race/ethnicity, age, physical activity, smoking status, education and income. Food insecure was analyzed as both a binary (food secure/food insecure) and ordinal (full/marginal/low/very low food security) variable.  Age, gender, and race/ethnicity were evaluated for effect modification.  
+**Results:**  The unadjusted prevalence of MetS in food secure individuals was `r prevalence_noalc[1] ` and in food insecure individuals was `r prevalence_noalc[2] `. Food insecurity was associated with MetS in females [adjusted relative risk (ARR) `r paste0(sprintf('%.2f', RR_female_noalc[1]), '(', sprintf('%.2f', RR_female_noalc[2]), '-', sprintf('%.2f', RR_female_noalc[3]), ")") `] but not in males [ARR `r paste0(sprintf('%.2f', RR_male_noalc[1]), '(', sprintf('%.2f', RR_male_noalc[2]), '-', sprintf('%.2f', RR_male_noalc[3]), ")") `]. Low food security was associated with MetS (when compared to full food security) in females [ARR `r RR_female_cat_noalc[2]`] but not males [ARR `r paste0(sprintf('%.2f', RR_male_cat_noalc[2,1]), '(', sprintf('%.2f', RR_male_cat_noalc[2,2]), '-', sprintf('%.2f', RR_male_cat_noalc[2,3]), ")")`].  
+**Conclusions:** Food insecurity is associated with a moderately increased risk of MetS in females. Further research is required to access the reasons for these gender differences. It is important for public health professionals to consider access to affordable high quality food when working to promote good metabolic and cardiovascular health. 
 
-# Introduction  
+## Introduction
 In the early 1980's there began to be a recognition in the United States that many households faced limited or uncertain access to adequate food differing from malnutrition and chronic hunger. Therefore, in 1995 the 18 item U.S. Food Security Survey Module was added to the Current Population Survey (CPS) to measure the prevalence of food insecurity in the US [@Carlson]. The USDA defines food insecurity as "limited or uncertain availability of nutritionally adequate and safe foods or uncertain ability to acquire acceptable foods in socially acceptable ways"[@Bickel]. In 2011, it was estimated that 14.9 percent of households were food insecure at least some of the year and that the typical food secure household spent 24 percent more on food than the typical food-insecure household of the same size and composition[@Coleman]. Households reporting food insecurity may be more likely to consume low-nutrient energy dense foods [@Drewnowski] and report a decrease in the frequency of consumption of fruits and vegetables[@Kendall]. Previous research has found an association between food insecurity and hyperglycemia, hypertension, diabetes[@Seligman; @Gucciardi], peripheral arterial disease [@Redmond], poor cardiovascular health [@Saiz], increased in BMI in young women[@Gooding], and poor health outcomes in disabled adults[@Brucker]. Berkowitz et al. also found an association between food insecurity and poor metabolic control in adults with diabetes[@Berkowitz]. 
 
 Metabolic syndrome is the presence of multiple interrelated risk factors for cardiovascular disease (CVD) and diabetes. Metabolic syndrome is associated with a two-fold increased risk for developing CVD and a five-fold increase in type 2 diabetes mellitus. [@Alberti] According to the CDC, in 2014 heart disease was the leading cause of death and diabetes was the 7th leading cause of death[@CDCdeath].  A better understanding of the association between food security and poor cardiovascular and metabolic health can improve the effectiveness of public health interventions. To date, no studies have explored the association between food security and early indicators of poor cardiometabolic health other than BMI, but evidence suggests BMI may be a poor indicator[@Tomiyama].
 
-# Methods  
+## Methods  
 *Data*  
 This study used publicly available de-identified data from the CDC collected as part of the National Health and Nutrition Examination Study (NHANES), a cross-sectional, annual survey representative of the non-institutionalized US population[@NHANES]. The survey is conducted annually using a complex survey design and data are bundled into two-year cycles. Data was combined from eight NHANES cycles (1999 - 2014).  Only individuals who were selected for the morning examination are included as fasting glucose and triglyceride samples were only collected in those sessions. Individuals under 18 and over 65 were excluded as were pregnant women. Participants with missing exposure, outcome, and covariate data were also excluded from analysis.
 
@@ -92,7 +96,7 @@ pander(crit,
 Covariates known to be associated with metabolic syndrome and/or food security were included. Included covariates were age, gender, race/ethnicity, education, income, physical activity and smoking status. In 2011, NHANES started collecting data for Asians, however to preserve continuity the old race/ethnicity variable was used for all years. Annual family income was used, some participants answered "over $20,000" in lieu of the finer income categories, these responses were excluded as it was felt this category was to coarse. Moderate physical activity was determined as a yes to any question about performing more than 30 min of moderate activity on a typical day, as part of work, or in the last 30 days. In order to look at differences in prevalence of metabolic syndrome and food insecurity by age and NHANES cycle, age was categorized for those analyses only. Age categories were 20-29, 30-39, 40-49, and 50-59. 
 
 *Analysis*  
-All analysis was performed using the survey package v(`r packageVersion('lmerTest')`) [@survey] in `r R.Version()$version.string` [@R]. The complex survey design was incorporated in all estimations. All participants with a non-zero fasting sub-sample MEC weight were included in the design object and those participants meeting inclusion/exclusion criteria were indicated by a subset variable. 16-yr sub-sample weights were calculated according to the formula recommended by NHANES. [@NHANEStutor] Relative risk regression (binomial generalized linear regression with a log link function) was used to obtain all relative risks. Gender, age, and race/ethnciity were all evaluated for effect modification. The association between food insecurity and metabolic syndrome was evaluated both at the dichotimous food secure/food insecure level and for each categorical food security level (marginal, low, very low) using full food security as the reference group. All covariates that were not found to be effect modifiers were adjusted for. Significance of interaction terms for effect modification was determined using partial-F tests. P-values less than 0.05 were considered significant. 
+All analysis was performed using the survey package v(`r packageVersion('lmerTest')`) [@survey] in `r R.Version()$version.string` [@R]. The complex survey design was incorporated in all estimations. All participants with a non-zero fasting sub-sample MEC weight were included in the design object and those participants meeting inclusion/exclusion criteria were indicated by a subset variable. 16-yr sub-sample weights were calculated according to the formula recommended by NHANES. [@NHANEStutor] Relative risk regression (binomial generalized linear regression with a log link function) was used to obtain all relative risks. Gender, age, and race/ethnicity were all evaluated for effect modification. The association between food insecurity and metabolic syndrome was evaluated both at the dichotomous food secure/food insecure level and for each categorical food security level (marginal, low, very low) using full food security as the reference group. All covariates that were not found to be effect modifiers were adjusted for. Significance of interaction terms for effect modification was determined using log likelihood. P-values less than 0.05 were considered significant. 
 
 
 ``` {r create n vars}
@@ -111,8 +115,8 @@ n_excl_covariates <- format(nrow(analysis[!is.na(analysis$foodinsecure) & analys
 n_analysis <- format(nrow(analysis[analysis$subset3 == T,]), big.mark = ',', trim =T)
 ```
 
-# Results  
-There were `r n_tot` participants who were selected for the morning examination (fasting subsample MEC weight not equal to zero) of which `r n_incl_age` were 18-65 years old, `r n_excl_preg` were excluded for pregnancy. `r n_excl_outcome` were missing information on metabolic syndrome, `r n_excl_exp` were missing information on food security, and `r n_excl_covariates` were missing covariate information; these participants were also excluded from the analysis, giving a final n =  `r n_analysis`. (Fig `r inc(f)`) Unweighted participant characteristics and missing food security and covariate information are given in Table `r inc(t)`. 
+## Results  
+There were `r n_tot` participants who were selected for the morning examination (fasting sub-sample MEC weight not equal to zero) of which `r n_incl_age` were 18-65 years old, `r n_excl_preg` were excluded for pregnancy. `r n_excl_outcome` were missing information on metabolic syndrome, `r n_excl_exp` were missing information on food security, and `r n_excl_covariates` were missing covariate information; these participants were also excluded from the analysis, giving a final n =  `r n_analysis`. (Fig `r inc(f)`) Unweighted participant characteristics and missing food security and covariate information are given in Table `r inc(t)`, weighted participant charactersics and p-values in Table `r inc(t)`. 
 
 ``` {r n flowchat, fig.heigt = 4, fig.width = 8, fig.cap = "Inclusion/Exclusion Criteria"}
 # create a flow chart to show inclusion/exclusion criteria
@@ -173,7 +177,6 @@ pander(tblweig,
 \elandscape
 
 \newpage
-The prevalence of metabolic syndrome increased with age but has not changed over time. However the prevalence of food insecurity while decreasing with age, has been increasing in over time. (Figs `r inc(f)` & `r inc(f)`). 
 
 ```{r age-period graphs, fig.cap= "Prevalence of Metabolic Syndrome and Food Insecurity by Age and NHANES Cycle"}
 # title2 <- 
@@ -186,7 +189,8 @@ grid.arrange(arrangeGrob(plotMSbyAGe + theme(legend.position="none"),
 
 ```
 
-```{r foodseccat graphs, fig.height = 7, fig.cap = "Prevalence of Food Security Categories by Age and NHANES Cycle"}
+
+```{r foodseccat graphs, fig.height = 5, fig.cap = "Prevalence of Food Security Categories by Age and NHANES Cycle"}
 # title1=textGrob("Prevalence of Food Security Categories by Age and NHANES Cycle",
 #                 gp=gpar(fontface="bold"))
 grid.arrange(arrangeGrob(p_FS2 + theme(legend.position="none"),
@@ -196,8 +200,8 @@ grid.arrange(arrangeGrob(p_FS2 + theme(legend.position="none"),
               mylegend, ncol = 2, widths = c(6, 1), left = 'Prevalence')
 ```
 
-\newpage
 
+The prevalence of metabolic syndrome increased with age but has not changed over time. However the prevalence of food insecurity while decreasing with age, has been increasing in over time. (Figs `r inc(f)` & `r inc(f)`). The unadjusted prevalence of metabolic syndrome trends higher with increasing food security, but not significantly. (Table `r inc(t)`) There was not a significant interaction between age or race/ethnicity and food security, but there was a significant interaction between gender and food insecurity (p `r ifelse(genderint[4] < 0.0001, "< 0.0001", sprintf('= %.4f', genderint[4]))`). Food insecurity was significantly associated with metabolic syndrome in females [adjusted risk ratio (ARR): `r format(RR_female_noalc[1], digits = 2, nsmall = 2)` 95% CI: `r format(RR_female_noalc[2], digits = 2, nsmall = 2)` - `r format(RR_female_noalc[2], digits = 2, nsmall = 2)`] but was not not significantly associated with metabolic syndrome in males [ARR: `r format(RR_male_noalc[1], digits = 2, nsmall = 2)` 95% CI: `r format(RR_male_noalc[2], digits = 2, nsmall = 2)` - `r format(RR_male_noalc[2], digits = 2, nsmall = 2)`]. Low food security was also significantly associated with metabolic syndrome in females [ARR: `r format(RR_female_cat_noalc[1,2], digits = 2, nsmall = 2)` 95% CI: `r format(RR_female_cat_noalc[2,2], digits = 2, nsmall = 2)` - `r format(RR_female_cat_noalc[3,2], digits = 2, nsmall = 2)`] but very low food security was not [ARR: `r format(RR_female_cat_noalc[1,3], digits = 2, nsmall = 2)` 95% CI: `r format(RR_female_cat_noalc[2,3], digits = 2, nsmall = 2)` - `r format(RR_female_cat_noalc[3,3], digits = 2, nsmall = 2)`]. In males, there was a non-significant decrease in the association between increasing food insecurity and metabolic syndrome (Table `r inc(t)`). 
 
 
 ```{r results}
@@ -244,6 +248,7 @@ RR_female <- CItxt(RR_female)
 RR_male_noalc <- CItxt(RR_male_noalc)
 RR_female_noalc <- CItxt(RR_female_noalc)
 RR_male_cat_noalc <- apply(RR_male_cat_noalc, 1, CItxt)
+RR_female_cat_noalc <- apply(RR_female_cat_noalc, 2, CItxt)
 
 AdjTab <- matrix(c('\\ ', '\\ ', RR_male_noalc, '\\ ', RR_male_cat_noalc,
                    '\\ ', '\\ ', RR_female_noalc, '', 
@@ -266,7 +271,9 @@ pander(AdjTab,
 
 
 # Discussion  
-The biggest limitation of this study is the cross-sectional design. Metabolic syndrome increases over time as would be expected as poor diet and lifestyle take time to
+The biggest limitation of this study is the cross-sectional design. The prevalence of metabolic syndrome is higher in older ages and is likely a result of years of poor diet. The prevalence of food insecurity, however, goes down with age as wages and other causes of poverty tend to decrease. Due to the cross-sectional nature of this study, we were unable to analyze the effects of many years of food insecurity previously in individuals who are not food insecure now on metabolic syndrome.  The relative risk of metabolic syndrome in individuals classified as "very low food security" compared to "full food security" is also lower than in those classified as "low food security". This may be because individuals who have very low food security maybe experiencing hunger or malnutrition. While these conditions would have negative health effects, they may be less likely to cause metabolic syndrome. 
+
+Previous studies have also found gender differences in associations between food insecurity and health outcomes[@Hernandez; @Strings; @Liu]. Jansen et al, in a study of preschoolers,  found an association between girls who became food insecure and increased BMI and between girls who became food secure and increased diet quality. No such relationship was found in the boys. [@Jansen] 
 
 # Conculsions  
 
