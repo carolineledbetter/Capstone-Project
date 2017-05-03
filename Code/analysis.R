@@ -494,9 +494,8 @@ RR_female_cat_noalc <- sapply(0:2, function(i) {
                       2*cov[2+i, 5+i] + 2*cov[2+i,28+i] + 2*cov[5+i,28+i])
   CI_female <- exp(c(log_RR_female - 1.96*SE_female, log_RR_female + 1.96*SE_female))
   RR_female <- c(exp(log_RR_female), CI_female)
-  names(RR_female)[2:3] <- c('2.5%', '97.5%')
-  RR_female <- round(RR_female, 2)
-  return(paste0(RR_female[1],"(", RR_female[2], '-', RR_female[3], ')'))
+  names(RR_female) <- c('ARR', '2.5%', '97.5%')
+  return(c(RR_female[1], RR_female[2], RR_female[3]))
 })
 
 save(list = c(ls(pattern = 'RR_.*'), ls(pattern = 'plot'), ls(pattern = 'p_FS'), 
