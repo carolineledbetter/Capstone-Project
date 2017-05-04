@@ -113,41 +113,83 @@ n_excl_exp <- format(nrow(analysis[is.na(analysis$foodinsecure) &
 n_excl_covariates <- format(nrow(analysis[!is.na(analysis$foodinsecure) & analysis$subset == T 
                                           & analysis$excludecov2 == T,]), big.mark = ',', trim = T)
 n_analysis <- format(nrow(analysis[analysis$subset3 == T,]), big.mark = ',', trim =T)
+n_foodsec <- format(nrow(analysis[analysis$subset3 == T & 
+                                    analysis$FoodInsecure == 'Food Secure',]), 
+                    big.mark = ',', trim =T)
+n_foodinsec <- format(nrow(analysis[analysis$subset3 == T & 
+                                      analysis$FoodInsecure == 'Food Insecure',]), 
+                      big.mark = ',', trim =T)
+n_foodcat1 <- format(nrow(analysis[analysis$subset3 == T & 
+                                      analysis$FoodSecurity ==
+                                     levels(analysis$FoodSecurity)[1],]), 
+                      big.mark = ',', trim =T)
+n_foodcat2 <- format(nrow(analysis[analysis$subset3 == T & 
+                                      analysis$FoodSecurity ==
+                                     levels(analysis$FoodSecurity)[2],]), 
+                      big.mark = ',', trim =T)
+n_foodcat3 <- format(nrow(analysis[analysis$subset3 == T & 
+                                      analysis$FoodSecurity ==
+                                     levels(analysis$FoodSecurity)[3],]), 
+                      big.mark = ',', trim =T)
+n_foodcat4 <- format(nrow(analysis[analysis$subset3 == T & 
+                                      analysis$FoodSecurity ==
+                                     levels(analysis$FoodSecurity)[4],]), 
+                      big.mark = ',', trim =T)
 ```
 
 ## Results  
 There were `r n_tot` participants who were selected for the morning examination (fasting sub-sample MEC weight not equal to zero) of which `r n_incl_age` were 18-65 years old, `r n_excl_preg` were excluded for pregnancy. `r n_excl_outcome` were missing information on metabolic syndrome, `r n_excl_exp` were missing information on food security, and `r n_excl_covariates` were missing covariate information; these participants were also excluded from the analysis, giving a final n =  `r n_analysis`. (Fig `r inc(f)`) Unweighted participant characteristics and missing food security and covariate information are given in Table `r inc(t)`, weighted participant charactersics and p-values in Table `r inc(t)`. 
 
-``` {r n flowchat, fig.heigt = 4, fig.width = 8, fig.cap = "Inclusion/Exclusion Criteria"}
+``` {r n flowchat, fig.height = 5, fig.width = 8, fig.cap = "Inclusion/Exclusion Criteria"}
 # create a flow chart to show inclusion/exclusion criteria
 library(diagram)
 par(mar = c(1,1,1,1))
 openplotmat()
-elpos <- coordinates(c(1,1,2,1))
-
-elpos <- matrix(c(0.25,0.9,0.25,0.625,0.25,0.325,0.5,0.325,0.25,0.125), byrow = T, ncol = 2)
-fromto <- matrix(ncol = 2, byrow = T,data = c(1, 2, 2, 3, 3, 4, 3, 5))
+elpos <- matrix(c(0.25,.95,0.25,0.8,0.25,0.65,0.5,0.65,
+                  0.25,0.45,0.25,0.3,0.75,0.3,0.1,0.1,0.36,0.1,0.62,0.1,0.87,0.1), byrow = T, ncol = 2)
+fromto <- matrix(ncol = 2, byrow = T,data = c(1, 2, 2, 3, 3, 4, 3, 5, 5, 6, 5, 7, 6, 8, 6, 9, 7, 10, 7, 11))
 nr     <- nrow(fromto)
 arrpos <- matrix(ncol = 2, nrow = nr)
 for (i in 1:nr)
   arrpos[i,] <- straightarrow (to = elpos[fromto[i, 2], ],
                                from = elpos[fromto[i, 1], ],
                                lwd = 1, arr.pos = 0.6, arr.length = 0.2)
-textrect(elpos[1,], radx = 0.2, rady = 0.1, 
+textrect(elpos[1,], radx = 0.2, rady = 0.05, 
          lab = c("Fasting Subsample", paste0('N = ', n_tot)), cex = 1)
-textrect(elpos[2,], radx = 0.2, rady = 0.1, 
+textrect(elpos[2,], radx = 0.2, rady = 0.05, 
          lab = c("18-65 yr old", paste0('N = ', n_incl_age)), cex = 1)
-textrect(c(0.7, 0.325), radx = 0.225, rady = 0.15, 
+textrect(c(0.7, 0.65), radx = 0.225, rady = 0.1, 
          lab = c("Excluded:", 
                  paste0('N = ', n_excl_preg, ' (Pregnancy)'), 
                  paste0('N = ', n_excl_outcome, ' (Missing Outcomee)'), 
                  paste0('N = ', n_excl_exp, ' (Missing Exposure)'), 
                  paste0('N = ', n_excl_covariates, ' (Missing Covariates)')), 
-         cex = 0.75)
-textrect(elpos[5,], radx = 0.2, rady = 0.07, lab = paste0('N = ', n_analysis), cex = 1)
+         cex = 1)
+textrect(elpos[5,], radx = 0.2, rady = 0.05, lab = paste0('N = ', n_analysis), cex = 1)
+textrect(elpos[6,], radx = 0.2, rady = 0.05, 
+         lab = c('Food Secure',
+           paste0('N = ', n_foodsec)), cex = 1)
+textrect(elpos[7,], radx = 0.2, rady = 0.05, 
+         lab = c('Food Insecure',
+                 paste0('N = ', n_foodinsec)), cex = 1)
+textrect(elpos[8,], radx = 0.1, rady = 0.05, 
+         lab = c('Full Food Security',
+                 paste0('N = ', n_foodcat1)), cex = 1)
+textrect(elpos[9,], radx = 0.12, rady = 0.05, 
+         lab = c('Marginal Food Security',
+                 paste0('N = ', n_foodcat2)), cex = 1)
+textrect(elpos[10,], radx = 0.1, rady = 0.05, 
+         lab = c('Low Food Security',
+                 paste0('N = ', n_foodcat3)), cex = 1)
+textrect(elpos[11,], radx = 0.12, rady = 0.05, 
+         lab = c('Very Low Food Security',
+                 paste0('N = ', n_foodcat4)), cex =1)
+
 ```
 
+
 \newpage
+
 
 ```{r demographics uw}
 # unweighted demographics table
