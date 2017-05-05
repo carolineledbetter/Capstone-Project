@@ -11,3 +11,4 @@ Analytical Descriptives.R | contains final descriptives of the analysis data set
 Table1Unweighted.R | contains a function that creates unweighted descriptives for table 1 including missing values and excluding p values with an option to include missing categoricals.  
 Table1Weighted | contains a function that uses the survey design object to create the weighted descriptives for Table 1 including p values.  
 Analysis.R | contains all of the code used in the analysis.
+Demographic Graphs.R | Represents table 2 in graphic form. 
