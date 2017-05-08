@@ -1,4 +1,5 @@
 This folder contains all output and reports.  
+Outputted graphics are in the images folder.  
 
 Details about the files in this folder:
 
@@ -10,6 +11,5 @@ Abstract | is the Abstract created for the Colorado School of Public Health (CSP
 AbstratFinal | is the final submitted abstract to the CSPH forum with all style and formatting requirements. 
 Final Report | is the final report in the structure required by the CSPH for the Capstone Project. 
 Final Paper | presents all findings and is the format of a standard academic paper. 
-Demos.png | contains table2 in graphic form created by code
-Rplot.png | contains table2 in graphic form saved from plot viewer
+
 

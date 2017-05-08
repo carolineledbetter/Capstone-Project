@@ -93,7 +93,7 @@ library(gridExtra)
 title1=textGrob("Characterstics of Particiants by Food Security Category",
                 gp=gpar(fontface="bold"))
 
-png(filename = '~/Repositories/Capstone-Project/Reports/demos.png', width = 1280,
+png(filename = '~/Repositories/Capstone-Project/Reports/Images/demos.png', width = 1280,
     height = 800, bg = 'white', typ = 'quartz')
 plot(grid.arrange(arrangeGrob(p_Race, p_Education, p_Income, 
                               p_Smoker, p_PhysAct, p_Gender, 
