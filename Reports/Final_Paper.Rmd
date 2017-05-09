@@ -252,35 +252,51 @@ CItxt <- function(obj) {
   return(z)
 }
 
-# Create table of prevalence and crude relative risks
+# Format
 
-RR_basic_noalc <- CItxt(RR_basic_noalc)
-RR_basic_noalc2 <- apply(RR_basic_noalc2, MARGIN = 1, CItxt)
+RR_crude <- apply(RR_basic_noalc, MARGIN = 1, CItxt)
+RR_crude_cat <- matrix(NaN, nrow = 2, ncol = 3, 
+                       dimnames = list(c('Male', "Female"),
+                                       c('Marginal', 'Low', 'Very Low')))
+RR_crude_cat[1,] <- sapply(c(1,4,7), function(x) CItxt(RR_basic_noalc2[1,x:(x+2)]))
+RR_crude_cat[2,] <- sapply(c(1,4,7), function(x) CItxt(RR_basic_noalc2[2,x:(x+2)]))
 
-UnadjTbl1 <- matrix(c('\\ ', prevalence_noalc, '---', prevalence_alt_noalc,
-                      '\\ ', '\\ ', RR_basic_noalc, 
-                      '\\ ', RR_basic_noalc2),
-                     ncol = 1, 
-                     dimnames = list(c('Unadjusted Prevalence',
-                                       '\\ Food Secure',
-                                       '\\ Food Insecure',
-                                       '---',
-                                       '\\ Full food security', 
-                                       '\\ Marginal food security', 
-                                       '\\ Low Food security', 
-                                       '\\ Very low Food security',
-                                       'Crude Relative Risk',
-                                       'vs.  Food Secure', 
-                                       '\\ Food Insecure',
-                                       'vs. Full Food Security ', 
-                                       '\\ Marginal Food Security', 
-                                       '\\ Low Food Security', 
-                                       '\\ Very Low Food security'), 
-                                     c('Metabolic Syndrome')))
-panderOptions('table.split.table', Inf)
+RR_male_noalc_fmt <- CItxt(RR_male_noalc)
+RR_female_noalc_fmt <- CItxt(RR_female_noalc)
+RR_male_cat_noalc_fmt <- apply(RR_male_cat_noalc, 1, CItxt)
+RR_female_cat_noalc_fmt <- apply(RR_female_cat_noalc, 2, CItxt)
+
+#Create table
+Results <- matrix(c('\\ ', prevalence_noalc_male, prevalence_alt_noalc_male, 
+                    "\\ ", RR_crude[1], RR_crude_cat[1,], 
+                    '\\ ', RR_male_noalc_fmt, RR_male_cat_noalc_fmt, 
+                    '\\ ', prevalence_noalc_female, prevalence_alt_noalc_female, 
+                    '\\ ', RR_crude[2], RR_crude_cat[2,], 
+                    '\\ ', RR_female_noalc_fmt, RR_female_cat_noalc_fmt), 
+                  ncol = 2,  
+                  dimnames = list(c('Unadjusted Prevalence', 
+                                    '\\ Food Secure', 
+                                    '\\ Food Insecure', 
+                                    '\\ Full food security', 
+                                    '\\ Marginal food security', 
+                                    '\\ Low Food security', 
+                                    '\\ Very low Food security', 
+                                    'Crude Relative Risk', 
+                                    '\\ Food Insecure (vs. Secure)', 
+                                    '\\ Marginal Food Security (vs. Full)', 
+                                    '\\ Low Food Security (vs. Full)', 
+                                    '\\ Very Low Food security (vs. Full)',
+                                    'Adjusted Relative Risk', 
+                                    '\\ Food Insecure (vs. Secure)', 
+                                    '\\ Marginal Food Security (vs. Full)', 
+                                    '\\ Low Food Security (vs. Full)', 
+                                    '\\ Very Low Food security (vs. Full)'), 
+                                  c('Male', 'Female')))
+               
 set.alignment('center', row.names = 'left')
-pander(UnadjTbl1, 
-       caption = 'Unadjusted Prevalence and Relative Risk of Metabolic Syndrome')
+pander(Results, 
+       caption = 'Unadjusted Prevalence and Relative Risk of Metabolic Syndrome by Food Insecurity Status/Category')
+
 ```
 
 
@@ -290,29 +306,7 @@ Food security was significantly associated with metabolic syndrome in females su
 \newpage  
 
 ```{r adj results}
-# Adjusted relative risks stratified by gender
-RR_male <- CItxt(RR_male)
-RR_female <- CItxt(RR_female)
-RR_male_noalc <- CItxt(RR_male_noalc)
-RR_female_noalc_fmt <- CItxt(RR_female_noalc)
-RR_male_cat_noalc <- apply(RR_male_cat_noalc, 1, CItxt)
-RR_female_cat_noalc_fmt <- apply(RR_female_cat_noalc, 2, CItxt)
 
-AdjTab <- matrix(c('\\ ', '\\ ', RR_male_noalc, '\\ ', RR_male_cat_noalc,
-                   '\\ ', '\\ ', RR_female_noalc_fmt, '', 
-                   RR_female_cat_noalc_fmt), ncol = 2, byrow = F, 
-                 dimnames = list(c('Adjusted Risk Ratio', 
-                                   'vs. Food Secure', 
-                                   '\\ Food Insecure', 
-                                   'vs. Full Food Security ', 
-                                   '\\ Marginal Food Security', 
-                                   '\\ Low Food Security', 
-                                   '\\ Very Low Food security'),
-                                 c('Male', 'Female')))
-                 
-set.alignment('center', row.names = 'left')
-pander(AdjTab, 
-       caption = 'Adjusted Risk Ratio Metabolic Syndrome by Food Insecurity Status/Category')
 
 ```
 
@@ -324,7 +318,7 @@ The Food Security Survey Module assesses food insecurity at the household level,
 Previous studies have also found gender differences in associations between food insecurity and health outcomes[@Hernandez; @Strings; @Liu]. Jansen et al, in a study of preschoolers, found an association between girls who became food insecure and increased BMI and between girls who became food secure and increased diet quality. No such relationship was found in the boys. [@Jansen] The gender differences in response to low food security warrant further exploration. Dhurandhar has suggested that social status effects the physiological responses to food insecurity, arguing that food scarcity leads to increased body fat stores in low social status individuals [@Dhurandhar]. The negative trend line in males suggests that food insecurity is not only not significantly associated with metabolic syndrome in males, but that individuals respond to food insecurity in gender specific ways. Whether this is caused by physiological, environmental, or sociological factors or any combination of the three requires further research.  
 
 # Conculsions    
-Food insecurity in females was associated with a `r round((RR_female_noalc[1]-1)*100, 0)`% (95% CI: `r round((RR_female_noalc[2]-1)*100, 0)`% - `r round((RR_female_noalc[3]-1)*100, 0)`%) increased risk in metabolic syndrome compared to food secure females. Low food secure females had a `r round((RR_female_cat_noalc[1,2]-1)*100, digits = 0)`% (95% CI: `r round((RR_female_cat_noalc[2,2]-1)*100, digits = 0)`% - `r round((RR_female_cat_noalc[3,2]-1)*100, digits = 0)`%) higher risk of metabolic syndrome when compared to full food secure females. Metabolic syndrome is associated with a twofold increased risk for cardiovascular disease and a fivefold increased risk for diabetes, the number one and number seven causes of death in the US. By addressing food security in individuals before they develop chronic disease, prevention efforts may be more effective. 
+Food insecurity in females was associated with a `r round((RR_female_noalc[1]-1)*100, 0)`% (95% CI: `r round((RR_female_noalc[2]-1)*100, 0)`% - `r round((RR_female_noalc[3]-1)*100, 0)`%) increased risk in metabolic syndrome compared to food secure females. Low food secure females had a `r round(RR_female_cat_noalc[1,2]-1*100, digits = 0)`% (95% CI: `r round(RR_female_cat_noalc[2,2]-1*100, digits = 0)`% - `r round(RR_female_cat_noalc[3,2]-1*100, digits = 0)`%) higher risk for metabolic syndrome when compared to full food secure females. Metabolic syndrome is associated with a twofold increased risk for cardiovascular disease and a fivefold increased risk for diabetes, the number one and number seven causes of death in the US. By addressing food security in individuals before they develop chronic disease, prevention efforts may be more effective. 
 
 # Reproducible Research
 Everything needed to reproduce this analysis in its entirety, including all code and related documentation, may be found at [http://github.com/ledbettc/Capstone-Project]. 
