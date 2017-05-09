@@ -373,27 +373,65 @@ RR_female_cat <- sapply(0:2, function(i) {
 
 #########################################################################################
 ##### get unadjusted prevalence for Metabolic Syndrome by +/- Food Insecurity ###########
-prevalence_noalc <- sapply(levels(analysis$FoodInsecure), function(x) {
-  p <- svyciprop(~syndrome, subset(design, subset3 == T  & FoodInsecure == x))
+
+#### on the advice of Dr Dabelea will stratify prevalence and crude RR by Gender
+### old code is commented out
+# prevalence_noalc <- sapply(levels(analysis$FoodInsecure), function(x) {
+#   p <- svyciprop(~syndrome, subset(design, subset3 == T  & FoodInsecure == x))
+#   paste0(sprintf('%.2f', p), '(', sprintf('%.2f',attr(p, 'ci')[1]), '-',
+#          sprintf('%.2f', attr(p, 'ci')[2]), ')')
+# })
+# 
+# 
+# #### get unadjusted prevalence for Metabolic Syndrome by Each Food Security  Cat##########
+# prevalence_alt_noalc <- sapply(levels(analysis$FoodSecurity), function(x) {
+#   p <- svyciprop(~syndrome, subset(design, subset3 == T & FoodSecurity == x))
+#   paste0(sprintf('%.2f', p), '(', sprintf('%.2f',attr(p, 'ci')[1]), '-',
+#          sprintf('%.2f', attr(p, 'ci')[2]), ')')
+# })
+
+prevalence_noalc_male <- sapply(levels(analysis$FoodInsecure), function(x) {
+  p <- svyciprop(~syndrome, subset(design, subset3 == T  & FoodInsecure == x & 
+                                      Gender == 'Male'))
+  paste0(sprintf('%.2f', p), '(', sprintf('%.2f',attr(p, 'ci')[1]), '-',
+        sprintf('%.2f', attr(p, 'ci')[2]), ')')
+})
+
+prevalence_noalc_female <- sapply(levels(analysis$FoodInsecure), function(x) {
+  p <- svyciprop(~syndrome, subset(design, subset3 == T  & FoodInsecure == x & 
+                                     Gender == 'Female'))
   paste0(sprintf('%.2f', p), '(', sprintf('%.2f',attr(p, 'ci')[1]), '-',
          sprintf('%.2f', attr(p, 'ci')[2]), ')')
 })
-
 
 #### get unadjusted prevalence for Metabolic Syndrome by Each Food Security  Cat##########
-prevalence_alt_noalc <- sapply(levels(analysis$FoodSecurity), function(x) {
-  p <- svyciprop(~syndrome, subset(design, subset3 == T & FoodSecurity == x))
-  paste0(sprintf('%.2f', p), '(', sprintf('%.2f',attr(p, 'ci')[1]), '-',
+prevalence_alt_noalc_male <- sapply(levels(analysis$FoodSecurity), function(x) {
+  p <- svyciprop(~syndrome, subset(design, subset3 == T & FoodSecurity == x & 
+                                     Gender == 'Male'))
+  paste0(sprintf('%.2f', p), '(', sprintf('%.2f',attr(p, 'ci')[1]), '-', 
          sprintf('%.2f', attr(p, 'ci')[2]), ')')
 })
 
+prevalence_alt_noalc_female <- sapply(levels(analysis$FoodSecurity), function(x) {
+  p <- svyciprop(~syndrome, subset(design, subset3 == T & FoodSecurity == x & 
+                                     Gender == 'Female'))
+  paste0(sprintf('%.2f', p), '(', sprintf('%.2f',attr(p, 'ci')[1]), '-', 
+         sprintf('%.2f', attr(p, 'ci')[2]), ')')
+})
 #########################################################################################
 ########################## relative risk regression #####################################
 #########################################################################################
-summary(rrbasic_noalc <- svyglm(MetabolicSyndrome ~ FoodInsecure, design, 
-                                subset = subset3 == T, 
-                                family = quasibinomial(log), 
-                                start = c(-0.5, rep(0,1))))
+
+# summary(rrbasic_noalc <- svyglm(MetabolicSyndrome ~ FoodInsecure, design,
+#                                 subset = subset3 == T,
+#                                 family = quasibinomial(log),
+#                                 start = c(-0.5, rep(0,1))))
+
+summary(rrbasic_noalc <- svyglm(MetabolicSyndrome ~ FoodInsecure*Gender, design,
+                                subset = subset3 == T,
+                                family = quasibinomial(log),
+                                start = c(-0.5, rep(0,3))))
+
 
 # full model 
 summary(rrnoalc <- svyglm(MetabolicSyndrome ~ FoodInsecure + Gender + ridageyr + Race 
@@ -404,9 +442,12 @@ summary(rrnoalc <- svyglm(MetabolicSyndrome ~ FoodInsecure + Gender + ridageyr +
 
 
 # basic model <- exposure only  with Food Security Categories
-summary(rrbasic2_noalc <- svyglm(MetabolicSyndrome ~ FoodSecurity, design, 
+# summary(rrbasic2_noalc <- svyglm(MetabolicSyndrome ~ FoodSecurity, design, 
+#                                  subset = subset3 == T, 
+#                                  family = quasibinomial(log), start = c(-0.5, rep(0,3))))
+summary(rrbasic2_noalc <- svyglm(MetabolicSyndrome ~ FoodSecurity*Gender, design, 
                                  subset = subset3 == T, 
-                                 family = quasibinomial(log), start = c(-0.5, rep(0,3))))
+                                 family = quasibinomial(log), start = c(-0.5, rep(0,7))))
 
 # full model all covariates with Food Security Categories
 summary(rrnoalc2 <- svyglm(MetabolicSyndrome ~ FoodSecurity + Gender + ridageyr + Race 
@@ -415,18 +456,47 @@ summary(rrnoalc2 <- svyglm(MetabolicSyndrome ~ FoodSecurity + Gender + ridageyr 
                           subset = subset3 == T, family = quasibinomial(log), 
                           start = c(-0.5, rep(-0,26))))
 #crude
-RR_basic_noalc <- exp(c(rrbasic_noalc$coefficients[2], confint(rrbasic_noalc)[2,]))
+RR_basic_noalc <- matrix(NaN, nrow =2, ncol = 3, dimnames = 
+                           list(c('Male', 'Female'), c('Est', '2.5%', '97.5%')))
+# unadjusted male
+RR_basic_noalc[1,] <- exp(c(rrbasic_noalc$coefficients[2], confint(rrbasic_noalc)[2,]))
+
+# unadjusted female
+log_RR_basic_noalc <- c(rrbasic_noalc$coefficients[2] + rrbasic_noalc$coefficients[3] + 
+                          rrbasic_noalc$coefficients[4])
+cov <- vcov(rrbasic_noalc)
+SE_female_basic <- sqrt(cov[2,2] + cov[3,3] + cov[4,4] + 
+                          2*cov[2,3] + 2*cov[2,4] + 2*cov[3,4])
+CI_female_basic <- exp(c(log_RR_basic_noalc - 1.96*SE_female, 
+                         log_RR_basic_noalc + 1.96*SE_female))
+RR_basic_noalc[2,] <- c(exp(log_RR_basic_noalc), CI_female_basic)
 
 #adj
 RR_noalc <- exp(c(rrnoalc$coefficients[2], confint(rrnoalc)[2,]))
 RR_noalc
 
-# categories
-RR_basic_noalc2 <- matrix(exp(c(rrbasic2_noalc$coefficients[2:4], 
-                          confint(rrbasic2_noalc)[2:4,])), nrow = 3)
-
-RR_noalc2 <- matrix(exp(c(rrnoalc2$coefficients[2:4], confint(rrnoalc2)[2:4,])), nrow = 3)
-RR_noalc2
+# categories - crude
+RR_basic_noalc2 <- matrix(NaN, nrow =2, ncol = 9, dimnames = 
+                            list(c('Male', 'Female'), 
+                                 c('Marginal', '2.5%', '97.5%',
+                                   'Low', '2.5%', '97.5%',
+                                   'Very Low', '2.5%', '97.5%')))
+# unadjusted male
+RR_basic_noalc2[1,] <- sapply(2:4, function(x) 
+  exp(c(rrbasic2_noalc$coefficients[x], confint(rrbasic2_noalc)[x,])))
+  
+# unadjusted female
+RR_basic_noalc2[2,] <- sapply(0:2, function(i) {
+  log_RR_female <- c(rrbasic2_noalc$coefficients[2+i] + rrbasic2_noalc$coefficients[5] + 
+                       rrbasic2_noalc$coefficients[6+i])
+  cov <- vcov(rrbasic2_noalc)
+  SE_female <- sqrt(cov[2+i,2+i] + cov[5,5] + cov[6+i,6+i] + 
+                      2*cov[2+i, 5] + 2*cov[2+i,6+i] + 2*cov[5,6+i])
+  CI_female <- exp(c(log_RR_female - 1.96*SE_female, log_RR_female + 1.96*SE_female))
+  RR_female <- c(exp(log_RR_female), CI_female)
+  names(RR_female) <- c('ARR', '2.5%', '97.5%')
+  return(c(RR_female[1], RR_female[2], RR_female[3]))
+})
 
 
 ################ look for effect modifcication for Race, AgeCat, and Sex #################
@@ -487,11 +557,11 @@ RR_female_noalc
 
 
 RR_female_cat_noalc <- sapply(0:2, function(i) {
-  log_RR_female <- c(rr_int_noalc2$coefficients[2+i] + rr_int_noalc2$coefficients[5+i] + 
+  log_RR_female <- c(rr_int_noalc2$coefficients[2+i] + rr_int_noalc2$coefficients[5] + 
                        rr_int_noalc2$coefficients[28+i])
   cov <- vcov(rr_int_noalc2)
-  SE_female <- sqrt(cov[2+i,2+i] + cov[5+i,5+i] + cov[28+i,28+i] + 
-                      2*cov[2+i, 5+i] + 2*cov[2+i,28+i] + 2*cov[5+i,28+i])
+  SE_female <- sqrt(cov[2+i,2+i] + cov[5,5] + cov[28+i,28+i] + 
+                      2*cov[2+i, 5] + 2*cov[2+i,28+i] + 2*cov[5,28+i])
   CI_female <- exp(c(log_RR_female - 1.96*SE_female, log_RR_female + 1.96*SE_female))
   RR_female <- c(exp(log_RR_female), CI_female)
   names(RR_female) <- c('ARR', '2.5%', '97.5%')
