@@ -86,7 +86,9 @@ prevalence_alt <- sapply(levels(analysis$FoodSecurity), function(x) {
 
 # get prevalence of metabolic syndrom by age and HNANES cycle
 prevalenceMS <- sapply(c(1999,2001,2003,2005,2007,2009,2011,2013), function(cyc) 
-  sapply(seq(25,55,10), function(x) svyciprop(~syndrome, subset(design, yr == cyc & agecat == x & subset3 == T))))
+  sapply(seq(25,55,10), function(x) svyciprop(~syndrome, 
+                                              subset(design, yr == cyc & 
+                                                       agecat == x & subset3 == T))))
 colnames(prevalenceMS) <- c(1999,2001,2003,2005,2007,2009,2011,2013)
 rownames(prevalenceMS) <- seq(25,55,10)
 
@@ -171,7 +173,7 @@ plotMSbyAGe <- ggplot(data = prevMS_melt,
                       aes(x = midpoint, y = prevalence, group = year, colour = NHANES)) +
   labs(title = 'Metabolic Syndrome', x = NULL,
        y = NULL) +
-  geom_point(size = 1) + geom_line()
+  geom_point(size = 1) + geom_line() + theme(legend.key.size = unit(5, 'mm'))
 
 plotMSbyAGe
 
