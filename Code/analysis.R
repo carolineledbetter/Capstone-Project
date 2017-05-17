@@ -404,6 +404,27 @@ prevalence_noalc_female <- sapply(levels(analysis$FoodInsecure), function(x) {
          sprintf('%.2f', attr(p, 'ci')[2]), ')')
 })
 
+prevalence_noalc_male_100 <- sapply(levels(analysis$FoodInsecure), function(x) {
+  p <- svyciprop(~syndrome, subset(design, subset3 == T  & FoodInsecure == x & 
+                                     Gender == 'Male'))
+  paste0(round(p * 100, 0), '(', round(attr(p, 'ci')[1] * 100, 0), '-',
+         round(attr(p, 'ci')[2] * 100, 0), ')')
+})
+
+prevalence_noalc_female <- sapply(levels(analysis$FoodInsecure), function(x) {
+  p <- svyciprop(~syndrome, subset(design, subset3 == T  & FoodInsecure == x & 
+                                     Gender == 'Female'))
+  paste0(sprintf('%.2f', p), '(', sprintf('%.2f',attr(p, 'ci')[1]), '-',
+         sprintf('%.2f', attr(p, 'ci')[2]), ')')
+})
+
+prevalence_noalc_female_100 <- sapply(levels(analysis$FoodInsecure), function(x) {
+  p <- svyciprop(~syndrome, subset(design, subset3 == T  & FoodInsecure == x & 
+                                     Gender == 'Female'))
+  paste0(round(p * 100, 0), '(', round(attr(p, 'ci')[1] * 100, 0), '-',
+         round(attr(p, 'ci')[2] * 100, 0), ')')
+})
+
 #### get unadjusted prevalence for Metabolic Syndrome by Each Food Security  Cat##########
 prevalence_alt_noalc_male <- sapply(levels(analysis$FoodSecurity), function(x) {
   p <- svyciprop(~syndrome, subset(design, subset3 == T & FoodSecurity == x & 
@@ -417,6 +438,20 @@ prevalence_alt_noalc_female <- sapply(levels(analysis$FoodSecurity), function(x)
                                      Gender == 'Female'))
   paste0(sprintf('%.2f', p), '(', sprintf('%.2f',attr(p, 'ci')[1]), '-', 
          sprintf('%.2f', attr(p, 'ci')[2]), ')')
+})
+
+prevalence_alt_noalc_male_100 <- sapply(levels(analysis$FoodSecurity), function(x) {
+  p <- svyciprop(~syndrome, subset(design, subset3 == T & FoodSecurity == x & 
+                                     Gender == 'Male'))
+  paste0(round(p * 100, 0), '(', round(attr(p, 'ci')[1] * 100, 0), '-', 
+         round(attr(p, 'ci')[2] * 100, 0), ')')
+})
+
+prevalence_alt_noalc_female_100 <- sapply(levels(analysis$FoodSecurity), function(x) {
+  p <- svyciprop(~syndrome, subset(design, subset3 == T & FoodSecurity == x & 
+                                     Gender == 'Female'))
+  paste0(round(p * 100, 0), '(', round(attr(p, 'ci')[1] * 100, 0), '-', 
+         round(attr(p, 'ci')[2] * 100, 0), ')')
 })
 #########################################################################################
 ########################## relative risk regression #####################################
