@@ -343,11 +343,10 @@ RR_male
 RR_male_cat <- matrix(exp(c(rrfullmodelalt$coefficients[2:4], 
                           confint(rrfullmodelalt)[2:4,])), nrow = 3)
 
-log_RR_female <- c(rrfullmodel$coefficients[2] + rrfullmodel$coefficients[3] + 
+log_RR_female <- c(rrfullmodel$coefficients[2] + 
                      rrfullmodel$coefficients[28])
 cov <- vcov(rrfullmodel)
-SE_female <- sqrt(cov[2,2] + cov[3,3] + cov[28,28] + 
-                    2*cov[2,3] + 2*cov[2,28] + 2*cov[3,28])
+SE_female <- sqrt(cov[2,2] + cov[28,28] + 2*cov[2,28])
 CI_female <- exp(c(log_RR_female - 1.96*SE_female, log_RR_female + 1.96*SE_female))
 RR_female <- c(exp(log_RR_female), CI_female)
 names(RR_female)[2:3] <- c('2.5%', '97.5%')
@@ -355,11 +354,10 @@ RR_female
 
 
 RR_female_cat <- sapply(0:2, function(i) {
-  log_RR_female <- c(rrfullmodelalt$coefficients[2+i] + rrfullmodelalt$coefficients[5+i] + 
+  log_RR_female <- c(rrfullmodelalt$coefficients[2+i] + 
                        rrfullmodelalt$coefficients[30+i])
   cov <- vcov(rrfullmodelalt)
-  SE_female <- sqrt(cov[2+i,2+i] + cov[5+i,5+i] + cov[30+i,30+i] + 
-                      2*cov[2+i, 5+i] + 2*cov[2+i,30+i] + 2*cov[5+i,30+i])
+  SE_female <- sqrt(cov[2+i,2+i] + cov[30+i,30+i] + 2*cov[2+i,30+i])
   CI_female <- exp(c(log_RR_female - 1.96*SE_female, log_RR_female + 1.96*SE_female))
   RR_female <- c(exp(log_RR_female), CI_female)
   names(RR_female)[2:3] <- c('2.5%', '97.5%')
@@ -524,11 +522,10 @@ RR_basic_noalc2[1,] <- sapply(2:4, function(x)
   
 # unadjusted female
 RR_basic_noalc2[2,] <- sapply(0:2, function(i) {
-  log_RR_female <- c(rrbasic2_noalc$coefficients[2+i] + rrbasic2_noalc$coefficients[5] + 
+  log_RR_female <- c(rrbasic2_noalc$coefficients[2+i] + 
                        rrbasic2_noalc$coefficients[6+i])
   cov <- vcov(rrbasic2_noalc)
-  SE_female <- sqrt(cov[2+i,2+i] + cov[5,5] + cov[6+i,6+i] + 
-                      2*cov[2+i, 5] + 2*cov[2+i,6+i] + 2*cov[5,6+i])
+  SE_female <- sqrt(cov[2+i,2+i] + cov[6+i,6+i] + 2*cov[2+i,6+i])
   CI_female <- exp(c(log_RR_female - 1.96*SE_female, log_RR_female + 1.96*SE_female))
   RR_female <- c(exp(log_RR_female), CI_female)
   names(RR_female) <- c('ARR', '2.5%', '97.5%')
@@ -581,11 +578,10 @@ RR_male_noalc
 RR_male_cat_noalc <- matrix(exp(c(rr_int_noalc2$coefficients[2:4], 
                                   confint(rr_int_noalc2)[2:4,])), nrow = 3)
 
-log_RR_female_noalc <- c(rr_int_noalc$coefficients[2] + rr_int_noalc$coefficients[3] + 
+log_RR_female_noalc <- c(rr_int_noalc$coefficients[2] + 
                            rr_int_noalc$coefficients[26])
 cov <- vcov(rr_int_noalc)
-SE_female <- sqrt(cov[2,2] + cov[3,3] + cov[26,26] + 
-                    2*cov[2,3] + 2*cov[2,26] + 2*cov[3,26])
+SE_female <- sqrt(cov[2,2] + cov[26,26] + 2*cov[2,26])
 CI_female_noalc <- exp(c(log_RR_female_noalc - 1.96*SE_female, 
                          log_RR_female_noalc + 1.96*SE_female))
 RR_female_noalc <- c(exp(log_RR_female_noalc), CI_female_noalc)
@@ -594,11 +590,10 @@ RR_female_noalc
 
 
 RR_female_cat_noalc <- sapply(0:2, function(i) {
-  log_RR_female <- c(rr_int_noalc2$coefficients[2+i] + rr_int_noalc2$coefficients[5] + 
+  log_RR_female <- c(rr_int_noalc2$coefficients[2+i] + 
                        rr_int_noalc2$coefficients[28+i])
   cov <- vcov(rr_int_noalc2)
-  SE_female <- sqrt(cov[2+i,2+i] + cov[5,5] + cov[28+i,28+i] + 
-                      2*cov[2+i, 5] + 2*cov[2+i,28+i] + 2*cov[5,28+i])
+  SE_female <- sqrt(cov[2+i,2+i] + cov[28+i,28+i] + 2*cov[2+i,28+i])
   CI_female <- exp(c(log_RR_female - 1.96*SE_female, log_RR_female + 1.96*SE_female))
   RR_female <- c(exp(log_RR_female), CI_female)
   names(RR_female) <- c('ARR', '2.5%', '97.5%')

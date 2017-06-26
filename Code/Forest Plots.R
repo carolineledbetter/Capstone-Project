@@ -3,6 +3,7 @@
 #########################################################################################
 
 # This script makes forest plots of the results for use in the presentation.
+library(forestplot)
 
 #load results
 load(file = '~/Repositories/Data/Capstone/analysis_report.rdata')
@@ -62,9 +63,11 @@ tabletext<-cbind(names,
     ifelse(is.na(RR_est$Male[-1]), " ", 
            paste0(format(RR_est$Male[-1], digits = 2, nsmall = 2)))),
   c("Female",   
-    ifelse(is.na(RR_est$Male[-1]), " ", 
-           paste0(format(RR_est$Male[-1], digits = 2, nsmall = 2)))))
+    ifelse(is.na(RR_est$Female[-1]), " ", 
+           paste0(format(RR_est$Female[-1], digits = 2, nsmall = 2)))))
 
+fs <- 1
+gw <- 50
 
 forestplot(tabletext, 
            graph.pos = 2,
@@ -84,12 +87,14 @@ forestplot(tabletext,
            xticks = c(0.5, 1, 1.5, 2, 2.5),
            xlab="Risk Ratio",
            lwd.ci = 2,
-           graphwidth = unit(200, 'mm'), 
-           txt_gp = fpTxtGp(label = list(gpar(fontfamily = "Arial", cex = 3),
-                                         gpar(fontfamily = "Arial", col = 'cadetblue4', cex = 3),
-                                         gpar(fontfamily = "Arial", col = "darkblue", cex = 3)),
-                            ticks = gpar(fontfamily = "", cex=2.25),
-                            xlab  = gpar(fontfamily = "Arial", cex = 3)))
+           graphwidth = unit(gw, 'mm'), 
+           txt_gp = fpTxtGp(label = list(gpar(fontfamily = "Arial", cex = fs),
+                                         gpar(fontfamily = "Arial", col = 'cadetblue4', 
+                                              cex = fs),
+                                         gpar(fontfamily = "Arial", col = "darkblue", 
+                                              cex = fs)),
+                            ticks = gpar(fontfamily = "", cex= (fs*.75)),
+                            xlab  = gpar(fontfamily = "Arial", cex = fs)))
 
 
 #########################################################################################
@@ -150,7 +155,7 @@ tabletext<-cbind(names,
                  c("Male", " ",
                    paste0(format(RR_est$Male[3:8], digits = 2, nsmall = 2))),
                  c("Female", " ", 
-                   paste0(format(RR_est$Male[3:8], digits = 2, nsmall = 2))))
+                   paste0(format(RR_est$Female[3:8], digits = 2, nsmall = 2))))
 
 forestplot(tabletext, 
            graph.pos = 2,
@@ -170,10 +175,12 @@ forestplot(tabletext,
            xticks = c(0.2, 0.3, 0.4, 0.5),
            xlab="Prevalence",
            lwd.ci = 2,
-           graphwidth = unit(200, 'mm'), 
-           txt_gp = fpTxtGp(label = list(gpar(fontfamily = "Arial", cex = 3),
-                                         gpar(fontfamily = "Arial", col = 'cadetblue4', cex = 3),
-                                         gpar(fontfamily = "Arial", col = "darkblue", cex = 3)),
-                            ticks = gpar(fontfamily = "", cex=2.25),
-                            xlab  = gpar(fontfamily = "Arial", cex = 3)))
+           graphwidth = unit(gw, 'mm'), 
+           txt_gp = fpTxtGp(label = list(gpar(fontfamily = "Arial", cex = fs),
+                                         gpar(fontfamily = "Arial", col = 'cadetblue4',
+                                              cex = fs),
+                                         gpar(fontfamily = "Arial", col = "darkblue", 
+                                              cex = fs)),
+                            ticks = gpar(fontfamily = "", cex= (fs*0.75)),
+                            xlab  = gpar(fontfamily = "Arial", cex = fs)))
 
