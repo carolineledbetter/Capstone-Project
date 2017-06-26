@@ -605,6 +605,23 @@ RR_female_cat_noalc <- sapply(0:2, function(i) {
   return(c(RR_female[1], RR_female[2], RR_female[3]))
 })
 
+
+#########################################################################################
+#################################### trend analysis #####################################
+#########################################################################################
+
+summary(trend <- svyglm(MetabolicSyndrome ~ fsdad*Gender + 
+                          ridageyr  + Race + Income + 
+                          ModerateActivity + smoker + yr + Education, 
+                        design, subset = subset3 == T, family = quasibinomial(log), 
+                        start = c(-0.5, rep(0,25)), maxit = 50))
+
+trend_females <- trend$coefficients[2] + trend$coefficients[3] + trend$coefficients[26]
+
+cov_trend <- vcov(trend)
+SE_trend_female <- sqrt(cov[2,2] + cov[3,3] + cov[26,26] + 
+                    2*cov[2, 3] + 2*cov[2,26] + 2*cov[3,26])
+
 save(list = c(ls(pattern = 'RR_.*'), ls(pattern = 'plot'), ls(pattern = 'p_FS'), 
               ls(pattern = 'myleg.*'), ls(pattern = 'preval.*'), 'genderint', 
               'analysis'), 
