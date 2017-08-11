@@ -66,8 +66,8 @@ tabletext<-cbind(names,
     ifelse(is.na(RR_est$Female[-1]), " ", 
            paste0(format(RR_est$Female[-1], digits = 2, nsmall = 2)))))
 
-fs <- 1
-gw <- 50
+fs <- 3.4
+gw <- 200
 
 forestplot(tabletext, 
            graph.pos = 2,
@@ -78,7 +78,7 @@ forestplot(tabletext,
            mean = cbind(RR_est$Male, RR_est$Female),
            lower = cbind(RR_low$Male, RR_low$Female),
            upper = cbind(RR_high$Male, RR_high$Female),
-           clip =c(0.5, 2.5),
+           clip =c(0.5, 3.0),
            col=fpColors(box=c("cadetblue4", "darkblue"), 
                         lines =c("gray24", "darkblue")), 
            is.summary=c(TRUE,TRUE,rep(FALSE,4),TRUE,rep(FALSE,4)),
@@ -169,7 +169,7 @@ forestplot(tabletext,
            clip =c(0.2, 0.5),
            col=fpColors(box=c("cadetblue4", "darkblue"), 
                         lines =c("gray24", "darkblue")), 
-           is.summary=c(TRUE,TRUE,rep(FALSE,6)),
+           is.summary=c(TRUE, TRUE, rep(FALSE,6)),
            grid = F,
            zero = 0.35,
            xticks = c(0.2, 0.3, 0.4, 0.5),
